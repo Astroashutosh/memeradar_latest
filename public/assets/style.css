@@ -1,0 +1,391 @@
+@charset "UTF-8";
+/* font-family: "Sora", sans-serif;
+  font-family: "Be Vietnam Pro", sans-serif; */
+
+* {
+    margin: 0;
+    padding: 0;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+body {
+    /* background: url(../../images/login-bg.jpg); */
+    background: #000;
+    font-family: "Be Vietnam Pro", sans-serif;
+    font-size: 14px;
+    background-size: cover;
+    line-height: 1.5;
+    overflow: hidden;
+}
+
+.btn {
+    font-size: 16px;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.btn-primary {
+    background: url(../img/btn-layer.png), linear-gradient(137deg, #03601f, #1b9c40, #03601f);
+    background-position: bottom;
+    /* background: -webkit-linear-gradient(right, #1B9C40, #002a0c); */
+    border-color:  rgb(255 255 255 / 30%);
+    border-width: 2px;
+}
+
+.btn-primary:hover {
+    border-color: #ffed00;
+}
+
+.text-underline {
+    text-decoration: underline;
+}
+
+a {
+    color: #000;
+}
+
+.full-width {
+    width: 100% !important;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+a {
+    -ms-word-wrap: break-word;
+    word-wrap: break-word;
+    text-decoration: none;
+}
+
+img {
+    border: none;
+    max-width: 100%;
+    vertical-align: middle;
+}
+
+.text-warning {
+    color: #ffed00 !important;
+}
+
+.highlights-video {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 0;
+    -o-object-fit: cover;
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+}
+
+.left-shape {
+    background: url(../img/shape3.png) top center;
+    background-size: cover;
+    height: 300px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    z-index: 3;
+}
+
+
+.sec-divider {
+
+    background-size: cover;
+    height: 50px;
+    position: fixed;
+    right: 0;
+    left: 0;
+    z-index: 9;
+}
+
+.sec-divider.bottom {
+    background: url(../img/section-divider-bottom.png) top center;
+    top: 0;
+}
+
+.sec-divider.top {
+    background: url(../img/section-divider-top.png) top center;
+    bottom: 0;
+}
+
+.logo {
+    text-align: center;
+    margin-bottom: 15px;
+    width: 270px;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+}
+
+/* .logo::after {
+    background: #1b9c40;
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 5px;
+} */
+
+.logo img {
+    height: 100%;
+    z-index: 3;
+    position: relative;
+}
+
+
+.login {
+    max-height: 100vh;
+    min-height: 100vh;
+    overflow-X: hidden;
+    overflow-Y: auto;
+    float: left;
+    margin: 0 auto;
+    width: 100%;
+    padding: 0;
+    position: relative;
+    /* background: #1B9C40; */
+}
+
+.container::after {
+    background: url(/img/icon-no-bg.png) center;
+    background-size: cover;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    position: absolute;
+    content: '';
+    opacity: 0.1;
+    background-size: 100%;
+}
+
+.container {
+    width: 450px;
+    margin: 0 auto;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.login-wrapper {
+    position: relative;
+    z-index: 3;
+}
+
+
+
+.login-form-header {
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    font-size: 16px;
+    position: relative;
+    text-align: center;
+    border-bottom: 1px solid #ced4da;
+}
+
+.backArrow a {
+    position: absolute;
+    background: #afafaf;
+    width: 28px;
+    height: 28px;
+    color: #fff !important;
+    line-height: 27px;
+    text-align: center;
+    font-size: 20px;
+    border-radius: 50px;
+    left: 0;
+}
+
+.backArrow a:hover {
+    background: #000;
+}
+
+.login-form-header h1,
+.login-form-header h2 {
+    font-weight: 700;
+    color: #000;
+    margin: 0 0 20px 0;
+    font-size: 32px;
+    background: -webkit-linear-gradient(bottom, #ffed00, #ffffff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    position: relative;
+}
+
+.login-form-header h1::after {
+    left: 0;
+    top: 18px;
+    content: '';
+    background: -webkit-linear-gradient(bottom, #ffed00, #ffffff);
+    height: 2px;
+    position: absolute;
+    width: 55px;
+}
+
+.login-form-header h1::before {
+    right: 0;
+    top: 18px;
+    content: '';
+    background: -webkit-linear-gradient(bottom, #ffed00, #ffffff);
+    height: 2px;
+    position: absolute;
+    width: 55px;
+}
+
+.login-form-header p {
+    margin: 0;
+    padding: 0;
+    font-size: 15px;
+}
+
+
+.login-form-footer {
+    text-align: center;
+    margin-top: 20px;
+}
+
+label {
+    color: #000;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+
+.form-control {
+    display: block;
+    width: 100%;
+    padding: 0 0.75rem;
+    font-size: 14px;
+    height: 40px;
+    line-height: 40px;
+    color: #fff;
+    border: 2px solid rgb(255 255 255 / 30%);
+    background: transparent;
+    -webkit-appearance: auto;
+    -moz-appearance: auto;
+    appearance: auto;
+}
+
+.form-control:focus {
+    background: transparent;
+    color: #fff;
+    border-color: #ffed00;
+    box-shadow: 0 0 11px 0 #4CAF50;
+}
+
+.form-control::placeholder {
+    color: #c1c1c1;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+
+select option {
+    background: #000;
+}
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    margin: 0;
+}
+
+
+.copyRight {
+    text-align: center;
+    padding: 10px 50px;
+    font-size: 13px;
+    color: #fff;
+    border-top: 1px solid rgb(255 255 255 / 36%);
+    margin-top: 10px;
+    position: relative;
+    z-index: 2;
+}
+
+.copyRight a {
+    color: #ffed00;
+}
+
+@media (max-width: 1024px) {
+
+
+    .login {
+        padding: 20px;
+
+    }
+
+    .feature-head h1 {
+        font-size: 22px;
+    }
+
+    .feature-box h3 {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 320px) {
+    .logo {
+        width: 225px;
+    }
+}
+
+@media (max-width: 700px) {
+    body {
+        overflow-y: auto;
+    }
+
+    .login {
+        width: 100%;
+        /* max-height: 100%;
+        min-height: auto; */
+
+    }
+
+    .container {
+        width: 100%;
+        position: relative;
+        top: auto;
+        left: 0;
+        transform: inherit;
+        margin-top: 50px;
+        margin-bottom: 50px;
+    }
+
+    .login-form-header h1::after,
+    .login-form-header h1::before {
+        width: 33px;
+    }
+
+    .btn {
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .login-form-header h1,
+    .login-form-header h2 {
+
+        margin: 0 0 10px 0;
+        font-size: 28px;
+    }
+
+    .copyRight {
+        padding: 10px;
+    }
+}

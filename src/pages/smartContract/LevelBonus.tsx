@@ -1,0 +1,184 @@
+import { useState, useEffect } from 'react'
+import Sidebar from '../../components/layout/smartContract/Sidebar'
+import { useWallet } from "../../solana/context/WalletContext";
+import { checkUserRegistered, upgradePackage, getUserData } from "../../solana/program";
+import { notifySuccess, notifyError } from "../../solana/context/Notifications";
+import UpgradeModal from "../../components/modal/UpgradeModal";
+
+
+function LevelBonus() {
+  const { wallet } = useWallet();
+      const [selectedPackage, setSelectedPackage] = useState<any>(null);
+      const [userData, setUserData] = useState<any>(null);
+      const handleOpenUpgrade = (pkg: any) => {
+        setSelectedPackage(pkg);
+      };
+      useEffect(() => {
+         
+        const load = async () => {
+          if (!wallet) return;
+          const data = await getUserData(wallet);
+            if (data) {
+              setUserData(data);
+            }
+        };
+      
+        load();
+      }, [wallet]);
+      
+      const handleUpgrade = async () => {
+      
+          if (!wallet) return;
+          if (!selectedPackage) {
+            notifyError("Select package first");
+            return;
+          }
+      
+          try {
+            const registered = await checkUserRegistered(wallet);
+            console.log("registered",registered);
+            if (registered) {
+              await upgradePackage(wallet, selectedPackage.id);
+              notifySuccess("Package upgraded successfully");
+            }
+      
+          } catch (err:any) {
+            console.error(err);
+            notifyError(err.message || "Upgrade failed");
+          }
+      
+        };
+  return (
+    <>
+      <main>
+    <div className="container-fluid">
+      <div className="row">
+     <Sidebar onUpgradeClick={handleOpenUpgrade}/>
+        <div className="col-lg-12 col-xl-9">
+          <div className="SOL-page-title text-center"><span>Team Level Bonus</span></div>
+          <div className="row justify-content-center mb-3">
+            <div className="col-md-4 col-lg-4 col-12">
+              <div className="meme-earning-wrapper">
+                <div className="meme-earning-tab"><img src="/img/solana-icon.png" className="me-1"/>Total
+                  Income: {userData?.totalIncome ?? 0} SOL</div>
+              </div>
+            </div>
+          </div>
+          <div className="table-responsive table-style">
+            <table className="table">
+              <thead>
+                <tr>
+                  <th>Level</th>
+                  <th>DBO's</th>
+                  <th>Income</th>
+                  <th>Details</th>
+                </tr>
+              </thead>
+              <tbody>
+
+                <tr>
+                  <td>2 </td>
+                  <td>25</td>
+                  <td>0.03 SOL</td>
+                  <td> <a href="level-bonus-details.html" className="btn btn-primary btn-sm"><i
+                        className="fa-regular fa-eye small me-1"></i>View</a>
+                  </td>
+                </tr>
+                <tr>
+                  <td>3 </td>
+                  <td>60</td>
+                  <td>0.03 SOL</td>
+                  <td> <a href="level-bonus-details.html" className="btn btn-primary btn-sm"><i
+                        className="fa-regular fa-eye small me-1"></i>View</a>
+                  </td>
+                </tr>
+                <tr>
+                  <td>4 </td>
+                  <td>- </td>
+                  <td> - </td>
+                  <td> <a href="level-bonus-details.html" className="btn btn-primary btn-sm"><i
+                        className="fa-regular fa-eye small me-1"></i>View</a>
+                  </td>
+                </tr>
+                <tr>
+                  <td>5 </td>
+                  <td>- </td>
+                  <td> - </td>
+                  <td> <a href="level-bonus-details.html" className="btn btn-primary btn-sm"><i
+                        className="fa-regular fa-eye small me-1"></i>View</a>
+                  </td>
+                </tr>
+                <tr>
+                  <td>6 </td>
+                  <td>- </td>
+                  <td> - </td>
+                  <td> <a href="level-bonus-details.html" className="btn btn-primary btn-sm"><i
+                        className="fa-regular fa-eye small me-1"></i>View</a>
+                  </td>
+                </tr>
+                <tr>
+                  <td>7 </td>
+                  <td>- </td>
+                  <td> - </td>
+                  <td> <a href="level-bonus-details.html" className="btn btn-primary btn-sm"><i
+                        className="fa-regular fa-eye small me-1"></i>View</a>
+                  </td>
+                </tr>
+                <tr>
+                  <td>8 </td>
+                  <td>- </td>
+                  <td> - </td>
+                  <td> <a href="level-bonus-details.html" className="btn btn-primary btn-sm"><i
+                        className="fa-regular fa-eye small me-1"></i>View</a>
+                  </td>
+                </tr>
+                <tr>
+                  <td>9 </td>
+                  <td>- </td>
+                  <td> - </td>
+                  <td> <a href="level-bonus-details.html" className="btn btn-primary btn-sm"><i
+                        className="fa-regular fa-eye small me-1"></i>View</a>
+                  </td>
+                </tr>
+                <tr>
+                  <td>10 </td>
+                  <td>- </td>
+                  <td> - </td>
+                  <td> <a href="level-bonus-details.html" className="btn btn-primary btn-sm"><i
+                        className="fa-regular fa-eye small me-1"></i>View</a>
+                  </td>
+                </tr>
+                <tr>
+                  <td><strong>Total</strong> </td>
+                  <td> </td>
+                  <td><strong>0.06 SOL</strong></td>
+                  <td> </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div className="mt-3 text-muted fw-light">
+            <u>To qualify for this bonus:</u>
+            <ul>
+              <li>You must hold the rank of Advisor or above and have at least two direct referrals.</li>
+              <li> Please note that a minimum self-rank equal to or higher than the required rank is mandatory to unlock
+                the Team Level Bonus.</li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </main>
+<UpgradeModal
+      selectedPackage={selectedPackage}
+      onUpgrade={handleUpgrade}
+    />
+
+    
+    </>
+  )
+}
+
+export default LevelBonus

@@ -1,0 +1,32 @@
+src/
+├── assets/                # Images, icons, fonts, CSS files
+│   └── logo.png
+├── components/            # Reusable UI components
+│   ├── Navbar.tsx
+│   ├── Footer.tsx
+│   ├── Button.tsx
+│   └── WalletConnect.tsx
+├── pages/                 # Each route/page of your dApp
+│   ├── Landing/
+│   │   ├── Landing.tsx
+│   │   └── Landing.module.css
+│   ├── Auth/              # Authentication pages
+│   │   ├── Login.tsx
+│   │   └── Registration.tsx
+│   ├── Dashboard/         # User dashboard and subpages
+│   │   ├── Dashboard.tsx
+│   │   ├── Upgrade.tsx
+│   │   └── Reports.tsx
+├── context/               # React context for state management
+│   └── UserContext.tsx
+├── hooks/                 # Custom hooks
+│   ├── useWallet.ts
+│   └── useSolanaProgram.ts
+├── services/              # API calls or Solana interactions
+│   ├── authService.ts
+│   └── solanaService.ts
+├── utils/                 # Helper functions
+│   └── formatDate.ts
+├── App.tsx
+├── main.tsx
+└── routes.tsx             # React-router routes (optional)
