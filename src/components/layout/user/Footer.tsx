@@ -11,11 +11,11 @@ function Footer() {
   </footer>
     <img className="bg-shade" src={bgImg} alt=""/>
 
-   <div className="wsmobileheader">
+   {/* <div className="wsmobileheader">
         <a id="wsnavtoggle" className="wsanimated-arrow">
           <span></span>
         </a>
-      </div>
+      </div> */}
  
     </>
   )

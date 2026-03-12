@@ -3,7 +3,7 @@ import { Route } from 'react-router-dom'
 import Dashboard from './pages/user/Dashboard'
 import { WalletProvider } from "./solana/context/WalletContext";
 import { Notifications } from "./solana/context/Notifications";
-// import ProtectedRoute from './solana/context/ProtectedRoute';
+import ProtectedRoute from './solana/context/ProtectedRoute';
 import Login from './pages/Login'
 import Register from './pages/Register'
 import MainLayout from './components/layout/MainLayout'
@@ -45,10 +45,19 @@ function App() {
             <Route path="/:ref" element={<Register />} />
             <Route path="/register" element={<Register />} />
           </Route>
-          <Route path="/dashboard" element={<Dashboard />} />
+          
+              <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
 
-          {/* <Route element={<ProtectedRoute><MainLayout /></ProtectedRoute>}> */}
-          <Route element={<MainLayout />}>
+
+          <Route element={<ProtectedRoute><MainLayout /></ProtectedRoute>}>
+          {/* <Route element={<MainLayout />}> */}
             <Route path="/smartContract" element={<SmartContract />} />
             <Route path="/directTeam" element={<DirectTeam />} />
             <Route path="/networkTeam" element={<NetworkTeam />} />

@@ -23,6 +23,7 @@ const navigate = useNavigate();
       const registered = await checkUserRegistered(connectedWallet);
 
       if (registered) {
+        localStorage.setItem("wallet_login", "true");
         notifySuccess("Wallet already registered! Redirecting to dashboard...");
 
         setTimeout(() => {

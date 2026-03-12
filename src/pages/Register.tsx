@@ -36,6 +36,7 @@ function Register() {
       const registered = await checkUserRegistered(wallet);
       if (registered) {
         notifySuccess("Wallet already registered!");
+localStorage.setItem("wallet_login", "true");
         setTimeout(() => navigate("/dashboard"), 1500);
         return;
       }
@@ -559,7 +560,7 @@ function Register() {
                 </a>
               </div>
               <div className="text-center  text-white">
-                Already have an account? <Link to="/login" className="text-underline text-white">Login</Link>
+                Already have an account? <Link to="/" className="text-underline text-white">Login</Link>
               </div>
             </div>
           </div>

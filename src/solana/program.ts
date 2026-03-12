@@ -9,14 +9,14 @@ import type { AnchorUserAccount } from "./types";
 export const packages = [
   { id: 1, name: "Starter", price: 0.2 },
   { id: 2, name: "Advisor", price: 0.25 },
-  { id: 3, name: "Bronze", price: 0.5 }, //green
+  { id: 3, name: "Bronze", price: 0.5 }, 
   { id: 4, name: "Silver", price: 1 },
   { id: 5, name: "Gold", price: 2 },
-  { id: 6, name: "Platinum", price: 4 }, //green
-  { id: 7, name: "Sapphire", price: 8 }, //red
+  { id: 6, name: "Platinum", price: 4 },
+  { id: 7, name: "Sapphire", price: 8 }, 
   { id: 8, name: "Diamond", price: 16 },
-  { id: 9, name: "Director", price: 32 }, //red
-  { id: 10, name: "President", price: 64 }, //yellow
+  { id: 9, name: "Director", price: 32 }, 
+  { id: 10, name: "President", price: 64 }, 
 ];
 
 export const shorten = (address: string) => {
@@ -77,7 +77,7 @@ export const registerUser = async (
     const uplineUserPda = getUserPda(currentUpline.toString());
 
     try {
-      const upline = (await program.account.userAccount.fetch(uplineUserPda)) as unknown as AnchorUserAccount;;
+      const upline = (await program.account.userAccount.fetch(uplineUserPda)) as unknown as AnchorUserAccount;
 
       remainingAccounts.push({
         pubkey: uplineUserPda,
@@ -212,7 +212,6 @@ export const upgradePackage = async (
 
   return tx;
 };
-
 
 export const getUserData = async (wallet: string) => {
   try {
@@ -351,6 +350,8 @@ export const getUserData = async (wallet: string) => {
 
 //   return events;
 // };
+
+
 
 
 export const getDirectPartners = async (wallet: string) => {

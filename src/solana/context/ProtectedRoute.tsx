@@ -1,55 +1,68 @@
-import { useEffect, useState } from 'react';
-import { Navigate } from 'react-router-dom';
-import { useWallet } from './WalletContext';
-import { checkUserRegistered } from '../program';
+import { useEffect, useState } from "react";
+import { Navigate } from "react-router-dom";
+import { useWallet } from "./WalletContext";
+import { checkUserRegistered } from "../program";
 
-interface Props {
-  children: React.ReactNode;
-}
+const ProtectedRoute = ({ children }: any) => {
 
-const ProtectedRoute = ({ children }: Props) => {
-  const { wallet } = useWallet();
-  const [loading, setLoading] = useState(true);
+  const { wallet, walletReady } = useWallet();
+
   const [registered, setRegistered] = useState<boolean | null>(null);
 
+  // localStorage login flag
+  const isLoggedIn = localStorage.getItem("wallet_login");
+
   useEffect(() => {
+
+    if (!walletReady) return;
+
     const verify = async () => {
-      if (!wallet) {
-        setLoading(false);
+
+      if (!wallet || !isLoggedIn) {
+        setRegistered(false);
         return;
       }
 
       try {
+
         const isRegistered = await checkUserRegistered(wallet);
+
         setRegistered(isRegistered);
+
       } catch (err) {
-        console.error("Error checking registration:", err);
+
+        console.error(err);
         setRegistered(false);
-      } finally {
-        setLoading(false);
+
       }
+
     };
 
     verify();
-  }, [wallet]);
 
-  // Still loading
-  if (loading) {
-    return <div className="centered-page">Loading...</div>;
+  }, [wallet, walletReady, isLoggedIn]);
+
+  // wait wallet init
+  if (!walletReady) {
+    return <div>Loading...</div>;
   }
 
-  // Wallet not connected
-  if (!wallet) {
+  // not logged in
+  if (!wallet || !isLoggedIn) {
     return <Navigate to="/" replace />;
   }
 
-  // Wallet connected but not registered
-  if (registered === false) {
+  // wait registration check
+  if (registered === null) {
+    return <div>Loading...</div>;
+  }
+
+  // wallet connected but not registered
+  if (!registered) {
     return <Navigate to="/register" replace />;
   }
 
-  // Wallet connected and registered
-  return <>{children}</>;
+  return children;
 };
 
 export default ProtectedRoute;
