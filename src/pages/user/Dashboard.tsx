@@ -23,8 +23,11 @@ const [userData, setUserData] = useState<UserData | null>(null);
     const loadUser = async () => {
       if (!wallet || !walletReady) return;
         const data = await getUserData(wallet);
+        console.log(data);
+     
         if (data) {
           setUserData(data);
+
         }
     };
 
@@ -170,7 +173,12 @@ const userPackage = packages.find(
               <div className="row d-flex justify-content-between align-items-center">
                 <div className="col-sm-7 col-7 text-start">
                   <small> Current Rank</small>
-                  <h4> {userPackage?.name ?? "No Rank"}</h4>
+                  {/* <h4> {userPackage?.name ?? "No Rank"}</h4> */}
+                 <h4>
+  {userData?.rank && userData.rank !== "None"
+    ? userData.rank
+    : "No Rank"}
+</h4>
                 </div>
                 <div className="col-sm-5 col-5 text-end">
                   <a href="certificate.html" className="btn btn-primary btn-sm bg-gradient-golden">

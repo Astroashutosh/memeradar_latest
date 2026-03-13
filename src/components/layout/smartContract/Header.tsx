@@ -27,11 +27,11 @@ const handleDisconnect = async () => {
   return (
     <>
 
- <div className="wsmobileheader">
+ {/* <div className="wsmobileheader">
         <a id="wsnavtoggle" className="wsanimated-arrow">
           <span></span>
         </a>
-      </div>
+      </div> */}
 
       <header className="navbar x-header navbar-expand-lg">
         <div className="m-header">

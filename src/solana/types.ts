@@ -2,6 +2,7 @@ import * as anchor from "@coral-xyz/anchor";
 
 export interface UserData {
   userId: number;
+  rank: string;
   upline: string;
   uplineId?: number;
   sponsor: string;

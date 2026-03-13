@@ -213,6 +213,19 @@ export const upgradePackage = async (
   return tx;
 };
 
+
+// current rank
+
+export const RANK_NAMES: Record<number, string> = {
+  0: "None",
+  1: "Silver",
+  2: "Gold",
+  3: "Platinum",
+  4: "Sapphire",
+  5: "Diamond",
+};
+
+
 export const getUserData = async (wallet: string) => {
   try {
     const program = getProgram();
@@ -221,6 +234,9 @@ export const getUserData = async (wallet: string) => {
     if (!account) {
       return null;
     }
+
+// console.log(account);
+
     const defaultKey = anchor.web3.PublicKey.default.toBase58();
     const sponsorKey = account.referrer.toBase58();
     const uplineKey = account.upline.toBase58();
@@ -238,6 +254,7 @@ export const getUserData = async (wallet: string) => {
 
       try {
         const acc: any = await program.account.userAccount.fetch(pda);
+        // console.log(acc);
         return acc.id.toNumber();
       } catch {
         return undefined;
@@ -252,7 +269,7 @@ export const getUserData = async (wallet: string) => {
 
     return {
       userId: account.id.toNumber(),
-
+      rank: RANK_NAMES[account.rank] ?? "None",
       sponsor: sponsorKey === defaultKey ? "Not Assigned" : sponsorKey,
       sponsorId,
 

@@ -26,6 +26,7 @@ function DirectTeam() {
           <div className="SOL-page-title text-center"><span>My Direct Team</span></div>
           <div className="table-responsive table-style">
             <table className="table">
+            
               <thead>
                 <tr>
                   <th>S.No</th>
@@ -49,6 +50,7 @@ function DirectTeam() {
                   ))}
                 </tr>
               </thead>
+             
               <tbody>
                 {/* <tr>
                   <td>1</td>
@@ -251,6 +253,7 @@ function DirectTeam() {
                   ))
                 )}
               </tbody>
+
             </table>
           </div>
         </div>

@@ -22,12 +22,12 @@ const handleDisconnect = async () => {
 }
   return (
     <>
-
+{/* 
    <div className="wsmobileheader">
         <a id="wsnavtoggle" className="wsanimated-arrow">
           <span></span>
         </a>
-      </div>
+      </div> */}
 
       {/* <img className="bg-shade" src="/img/bg.webp" alt="" /> */}
       <header className="navbar x-header navbar-expand-lg">
