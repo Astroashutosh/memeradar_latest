@@ -1,8 +1,8 @@
 import { PublicKey, Connection } from '@solana/web3.js';
 
-export const PROGRAM_ID = new PublicKey('DcA18HBQkDMzhtBkzURKXHYtKTqjSZ93ERyFm6UXm7T2');
-export const globalPda = new PublicKey('AvEcTgG77yub5wcyQZgvzfVASy8LdNvfUu572ToQDn2C');
-export const vaultPda = new PublicKey("GVmocw94r2HLFdpwG5JwEDrCn54JoZGboGYkWoRpPAB5");
+export const PROGRAM_ID = new PublicKey('2BeffbNsCspUKr15Rcnz5N2mNqrxbvMrKC2fGES2NPAC');
+export const globalPda = new PublicKey('CPVMZh57xAWqgN3DmjC3nhkaKoywqnfXU3jyBU8b2FUL');
+export const vaultPda = new PublicKey("7S2AwHoPCcQ5G2R1yNkuTMPFicWUw7G42pP3VbPjvPaU");
 export const CLUSTER_URL = 'https://api.devnet.solana.com';
 export const connection = new Connection(CLUSTER_URL, "confirmed");
 export const ZERO = new PublicKey("11111111111111111111111111111111");

@@ -9,14 +9,14 @@ import type { AnchorUserAccount } from "./types";
 export const packages = [
   { id: 1, name: "Starter", price: 0.2 },
   { id: 2, name: "Advisor", price: 0.25 },
-  { id: 3, name: "Bronze", price: 0.5 }, 
+  { id: 3, name: "Bronze", price: 0.5 },
   { id: 4, name: "Silver", price: 1 },
   { id: 5, name: "Gold", price: 2 },
   { id: 6, name: "Platinum", price: 4 },
-  { id: 7, name: "Sapphire", price: 8 }, 
+  { id: 7, name: "Sapphire", price: 8 },
   { id: 8, name: "Diamond", price: 16 },
-  { id: 9, name: "Director", price: 32 }, 
-  { id: 10, name: "President", price: 64 }, 
+  { id: 9, name: "Director", price: 32 },
+  { id: 10, name: "President", price: 64 },
 ];
 
 export const shorten = (address: string) => {
@@ -67,8 +67,8 @@ export const registerUser = async (
   const sponsorPda = getUserPda(sponsorWallet);
   // const sponsorAccount = await program.account.userAccount.fetch(sponsorPda);
   const sponsorAccount =
-  (await program.account.userAccount.fetch(sponsorPda)) as unknown as AnchorUserAccount;
-  console.log("sponsorAccount",sponsorAccount);
+    (await program.account.userAccount.fetch(sponsorPda)) as unknown as AnchorUserAccount;
+  console.log("sponsorAccount", sponsorAccount);
   let remainingAccounts: any[] = [];
   let currentUpline = sponsorAccount.wallet as PublicKey;
   for (let i = 0; i < 10; i++) {
@@ -93,8 +93,8 @@ export const registerUser = async (
       break;
     }
   }
-  console.log("RemainingAccountsLength:",remainingAccounts.length);
-  console.log("RemainingAccounts:",remainingAccounts.map(a => a.pubkey.toBase58()));
+  console.log("RemainingAccountsLength:", remainingAccounts.length);
+  console.log("RemainingAccounts:", remainingAccounts.map(a => a.pubkey.toBase58()));
   const tx = await program.methods
     .register()
     .accounts({
@@ -109,6 +109,11 @@ export const registerUser = async (
 
   return tx;
 };
+
+
+
+
+
 
 export const upgradePackage = async (
   wallet: string,
@@ -142,13 +147,13 @@ export const upgradePackage = async (
   const ownerPubkey = new PublicKey(globalAccount.owner.toString());
 
   const sponsorUserAccount: any =
-  await program.account.userAccount.fetch(sponsorPda);
+    await program.account.userAccount.fetch(sponsorPda);
 
   const remainingAccounts: any[] = [];
 
   let currentUpline =
     sponsorUserAccount.referrer &&
-    !new PublicKey(sponsorUserAccount.referrer).equals(PublicKey.default)
+      !new PublicKey(sponsorUserAccount.referrer).equals(PublicKey.default)
       ? new PublicKey(sponsorUserAccount.referrer)
       : null;
 
@@ -182,7 +187,7 @@ export const upgradePackage = async (
 
     currentUpline =
       uplineAccount.referrer &&
-      !new PublicKey(uplineAccount.referrer).equals(PublicKey.default)
+        !new PublicKey(uplineAccount.referrer).equals(PublicKey.default)
         ? new PublicKey(uplineAccount.referrer)
         : null;
   }
@@ -235,7 +240,7 @@ export const getUserData = async (wallet: string) => {
       return null;
     }
 
-// console.log(account);
+    // console.log(account);
 
     const defaultKey = anchor.web3.PublicKey.default.toBase58();
     const sponsorKey = account.referrer.toBase58();
@@ -368,10 +373,93 @@ export const getUserData = async (wallet: string) => {
 //   return events;
 // };
 
-
-
-
 export const getDirectPartners = async (wallet: string) => {
+  try {
+    const program = getProgram();
+    const userPda = getUserPda(wallet);
+ 
+    const account: any = await program.account.userAccount.fetch(userPda);
+    if (!account) return [];
+ 
+    const directs = account.directUsers || [];
+ 
+    const partners = await Promise.all(
+      directs.map(async (partnerPda: PublicKey) => {
+        // const walletAddr = pk.toBase58();
+ 
+        try {
+          // const partnerPda = getUserPda(walletAddr);
+          const partner: any = await program.account.userAccount.fetch(partnerPda);
+ 
+          return {
+            wallet: partner.wallet.toBase58(),
+            dboId: partner.id.toNumber(),
+            currentPackage: partner.currentPackage,
+          };
+        } catch {
+          return {
+            wallet: "-",
+            dboId: "-",
+            currentPackage: "-",
+          };
+        }
+      })
+    );
+ 
+    return partners;
+ 
+  } catch (err) {
+    console.error("Error fetching direct partners:", err);
+    return [];
+  }
+};
+ 
+
+
+// export const getDirectPartners = async (wallet: string) => {
+//   try {
+//     const program = getProgram();
+//     const userPda = getUserPda(wallet);
+
+//     const account: any = await program.account.userAccount.fetch(userPda);
+//     if (!account) return [];
+
+//     const level1 = account.levelUsers?.[0] || [];
+
+//     const partners = await Promise.all(
+//       level1.map(async (pk: PublicKey) => {
+//         const walletAddr = pk.toBase58();
+
+//         try {
+//           const partnerPda = getUserPda(walletAddr);
+//           const partner: any = await program.account.userAccount.fetch(partnerPda);
+
+//           return {
+//             wallet: walletAddr,
+//             dboId: partner.id.toNumber(),
+//             currentPackage: partner.currentPackage,
+//           };
+//         } catch {
+//           return {
+//             wallet: walletAddr,
+//             dboId: "-",
+//             currentPackage: "-",
+//           };
+//         }
+//       })
+//     );
+
+//     return partners;
+
+//   } catch (err) {
+//     console.error("Error fetching direct partners:", err);
+//     return [];
+//   }
+// };
+
+
+
+export const getDirectPartnersold = async (wallet: string) => {
   try {
     const program = getProgram();
     const userPda = getUserPda(wallet);
@@ -415,56 +503,123 @@ export const getDirectPartners = async (wallet: string) => {
   }
 };
 
+// export const getLevelPartners = async (
+//   wallet: string,
+//   maxLevels = 10
+// ): Promise<any[][]> => {
+//   try {
+//     const program = getProgram();
+//     const userPda = getUserPda(wallet);
+
+//     const account: any = await program.account.userAccount.fetch(userPda);
+//     if (!account) return [];
+
+//     const levels: any[][] = [];
+
+//     for (let i = 0; i < maxLevels; i++) {
+//       const levelWallets = account.levelUsers[i] || [];
+
+//       const users = await Promise.all(
+//         levelWallets.map(async (pk: any) => {
+//           const walletAddr = pk.toBase58 ? pk.toBase58() : pk;
+
+//           try {
+//             const partnerPda = getUserPda(walletAddr);
+//             const partner: any = await program.account.userAccount.fetch(partnerPda);
+
+//             return {
+//               wallet: walletAddr,
+//               id: partner.id.toNumber(),
+//               package: partner.currentPackage,
+//             };
+
+//           } catch {
+//             return {
+//               wallet: walletAddr,
+//               id: "-",
+//               package: "-",
+//             };
+//           }
+//         })
+//       );
+
+//       levels.push(users);
+//     }
+
+//     return levels;
+
+//   } catch (err) {
+//     console.error("getLevelPartners error:", err);
+//     return [];
+//   }
+// };
+
+
 export const getLevelPartners = async (
   wallet: string,
   maxLevels = 10
 ): Promise<any[][]> => {
   try {
     const program = getProgram();
-    const userPda = getUserPda(wallet);
-
-    const account: any = await program.account.userAccount.fetch(userPda);
-    if (!account) return [];
-
     const levels: any[][] = [];
-
-    for (let i = 0; i < maxLevels; i++) {
-      const levelWallets = account.levelUsers[i] || [];
-
-      const users = await Promise.all(
-        levelWallets.map(async (pk: any) => {
-          const walletAddr = pk.toBase58 ? pk.toBase58() : pk;
-
-          try {
-            const partnerPda = getUserPda(walletAddr);
-            const partner: any = await program.account.userAccount.fetch(partnerPda);
-
-            return {
-              wallet: walletAddr,
-              id: partner.id.toNumber(),
-              package: partner.currentPackage,
-            };
-
-          } catch {
-            return {
-              wallet: walletAddr,
-              id: "-",
-              package: "-",
-            };
+ 
+    let currentLevelWallets: string[] = [wallet];
+ 
+    for (let level = 0; level < maxLevels; level++) {
+ 
+      const nextLevelWallets: string[] = [];
+      const levelUsers: any[] = [];
+ 
+      for (const w of currentLevelWallets) {
+        try {
+          const pda = getUserPda(w);
+          const account: any = await program.account.userAccount.fetch(pda);
+ 
+          const directs = account.directUsers || [];
+ 
+          for (const pk of directs) {
+            const addr = pk.toBase58();
+ 
+            try {
+              const partnerPda = getUserPda(addr);
+              const partner: any = await program.account.userAccount.fetch(partnerPda);
+ 
+              levelUsers.push({
+                wallet: addr,
+                id: partner.id.toNumber(),
+                package: partner.currentPackage,
+              });
+ 
+              nextLevelWallets.push(addr);
+ 
+            } catch {
+              levelUsers.push({
+                wallet: addr,
+                id: "-",
+                package: "-",
+              });
+ 
+              nextLevelWallets.push(addr);
+            }
           }
-        })
-      );
-
-      levels.push(users);
+ 
+        } catch {}
+      }
+ 
+      if (levelUsers.length === 0) break;
+ 
+      levels.push(levelUsers);
+      currentLevelWallets = nextLevelWallets;
     }
-
+ 
     return levels;
-
+ 
   } catch (err) {
     console.error("getLevelPartners error:", err);
     return [];
   }
 };
+
 
 
 export const getIncomeEvents = async () => {
@@ -501,7 +656,7 @@ export const getIncomeEvents = async () => {
               events.push(event.data);
             }
 
-          } catch (e) {}
+          } catch (e) { }
         }
 
       }
@@ -565,3 +720,71 @@ export const getBinaryTree = async (wallet: string) => {
     return null;
   }
 };
+
+
+
+// new code
+
+// type ReferralNode = {
+//   wallet: string;
+//   id: number;
+//   package: number;
+//   children: ReferralNode[];
+// };
+
+// export const getAllUsers = async () => {
+
+//   try {
+
+//     const program = getProgram();
+
+//     const accounts = await program.account.userAccount.all();
+
+//     return accounts.map((acc: any) => ({
+//       wallet: acc.account.wallet.toBase58(),
+//       id: acc.account.id.toNumber(),
+//       referrer: acc.account.referrer.toBase58(),
+//       package: acc.account.currentPackage,
+//     }));
+
+//   } catch (err) {
+
+//     console.error("getAllUsers error:", err);
+
+//     return [];
+
+//   }
+
+// };
+
+
+
+
+// export const getReferralTree = async (wallet: string): Promise<ReferralNode[]> => {
+
+//   const users = await getAllUsers();
+
+//   const buildTree = (parentWallet: string): ReferralNode[] => {
+
+//     const directs = users.filter(
+//       (u) => u.referrer === parentWallet
+//     );
+
+//     return directs.map((user) => ({
+//       wallet: user.wallet,
+//       id: user.id,
+//       package: user.package,
+//       children: buildTree(user.wallet)
+//     }));
+
+//   };
+
+//   return buildTree(wallet);
+
+// };
+
+
+
+
+
+

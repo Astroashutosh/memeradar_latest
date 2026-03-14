@@ -42,8 +42,7 @@ const handleDisconnect = async () => {
             <li>
               <Link to="javascript:" className="drp-user">
                <div className="avatar">
-  <svg
-    width="30"
+  <svg width="30"
     height="30"
     viewBox="0 0 128 128"
     xmlns="http://www.w3.org/2000/svg"
@@ -109,6 +108,7 @@ const handleDisconnect = async () => {
                                 <li><Link to="/globalPoolBonus"> Global Silver Bonus </Link></li>
                               </ul>
                             </div>
+                        
                             <div className="col-lg-4 col-md-12">
                               <ul className="wstliststy01 clearfix">
                                 <li className="wstheading clearfix">My Tools</li>
@@ -119,10 +119,13 @@ const handleDisconnect = async () => {
                                 <li><Link to="/printMaterials"> Print Materials </Link></li>
                               </ul>
                             </div>
+
+
                           </div>
                         </div>
                       </div>
                     </li>
+
                     <li><Link to="rewardboard.html">Earn Reward <span className="wsarrow"></span></Link>
                       <ul className="sub-menu">
                         <li><Link to="rewardboard.html"><i className="fa-light fa-laptop"></i>Earn Reward Dashboard</Link></li>

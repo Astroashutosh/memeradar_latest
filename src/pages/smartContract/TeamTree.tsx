@@ -9,8 +9,8 @@ function TeamTree() {
   // const [userData, setUserData] = useState<any>(null);
   const [tree, setTree] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [day, setDay] = useState("2");         // Default selected day
-  const [month, setMonth] = useState("December"); // Default selected month
+  const [day, setDay] = useState("2");        
+  const [month, setMonth] = useState("December"); 
   const [year, setYear] = useState("2026");
   useEffect(() => {
     

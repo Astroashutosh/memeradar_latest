@@ -7,7 +7,7 @@ import { checkUserRegistered, registerUser } from "../solana/program";
 
 
 function Register() {
-  const { wallet } = useWallet();
+  const { wallet,connect } = useWallet();
   const { ref } = useParams();
   // console.log("wallet1",wallet);
   const navigate = useNavigate();
@@ -17,11 +17,34 @@ function Register() {
       setSponsor(ref);
     }
   }, [ref]);
+
   const handleRegister = async () => {
+  
     if (!wallet) {
       notifyError("Wallet not connected");
       return;
     }
+  let connectedWallet = wallet;
+
+
+  if (!connectedWallet) {
+
+    try {
+      connectedWallet = await connect();
+
+      if (!connectedWallet) {
+        notifyError("Wallet not connected");
+        return;
+      }
+
+    } catch (err) {
+      notifyError("Wallet connection failed");
+      return;
+    }
+
+  }
+
+
     if (!sponsor || sponsor.trim() === "") {
       notifyError("Invitation Code is required");
       return;
@@ -51,7 +74,73 @@ localStorage.setItem("wallet_login", "true");
     }
 
   };
-  return (
+  
+
+// const handleRegister = async () => {
+
+//   let connectedWallet = wallet;
+
+
+//   if (!connectedWallet) {
+
+//     try {
+//       connectedWallet = await connect();
+
+//       if (!connectedWallet) {
+//         notifyError("Wallet not connected");
+//         return;
+//       }
+
+//     } catch (err) {
+//       notifyError("Wallet connection failed");
+//       return;
+//     }
+
+//   }
+
+//   if (!sponsor || sponsor.trim() === "") {
+//     notifyError("Invitation Code is required");
+//     return;
+//   }
+
+//   const confirmRegister = window.confirm(
+//     `You are about to register with invitation code: ${sponsor}. Continue?`
+//   );
+
+//   if (!confirmRegister) return;
+
+//   try {
+
+//     const registered = await checkUserRegistered(connectedWallet);
+
+//     if (registered) {
+
+//       notifySuccess("Wallet already registered!");
+
+//       localStorage.setItem("wallet_login", "true");
+
+//       setTimeout(() => navigate("/dashboard"), 1500);
+
+//       return;
+//     }
+
+//     await registerUser(connectedWallet, sponsor);
+
+//     notifySuccess("Registration successful!");
+//       localStorage.setItem("wallet_login", "true");
+//     setTimeout(() => navigate("/dashboard"), 1500);
+
+//   } catch (err) {
+
+//     console.error(err);
+
+//     notifyError("Registration failed");
+
+//   }
+
+// };
+
+return (
     <>
 
       <div className="container">
