@@ -18,62 +18,62 @@ function Register() {
     }
   }, [ref]);
 
-  const handleRegister = async () => {
+//   const handleRegister = async () => {
   
-    if (!wallet) {
-      notifyError("Wallet not connected");
-      return;
-    }
-  let connectedWallet = wallet;
+//     if (!wallet) {
+//       notifyError("Wallet not connected");
+//       return;
+//     }
+//   let connectedWallet = wallet;
 
 
-  if (!connectedWallet) {
+//   if (!connectedWallet) {
 
-    try {
-      connectedWallet = await connect();
+//     try {
+//       connectedWallet = await connect();
 
-      if (!connectedWallet) {
-        notifyError("Wallet not connected");
-        return;
-      }
+//       if (!connectedWallet) {
+//         notifyError("Wallet not connected");
+//         return;
+//       }
 
-    } catch (err) {
-      notifyError("Wallet connection failed");
-      return;
-    }
+//     } catch (err) {
+//       notifyError("Wallet connection failed");
+//       return;
+//     }
 
-  }
+//   }
 
 
-    if (!sponsor || sponsor.trim() === "") {
-      notifyError("Invitation Code is required");
-      return;
-    }
+//     if (!sponsor || sponsor.trim() === "") {
+//       notifyError("Invitation Code is required");
+//       return;
+//     }
 
-    const confirmRegister = window.confirm(
-      `You are about to register with invitation code: ${sponsor}. Continue?`
-    );
+//     const confirmRegister = window.confirm(
+//       `You are about to register with invitation code: ${sponsor}. Continue?`
+//     );
 
-    if (!confirmRegister) return;
-    try {
-      const registered = await checkUserRegistered(wallet);
-      if (registered) {
-        notifySuccess("Wallet already registered!");
-localStorage.setItem("wallet_login", "true");
-        setTimeout(() => navigate("/dashboard"), 1500);
-        return;
-      }
+//     if (!confirmRegister) return;
+//     try {
+//       const registered = await checkUserRegistered(wallet);
+//       if (registered) {
+//         notifySuccess("Wallet already registered!");
+// localStorage.setItem("wallet_login", "true");
+//         setTimeout(() => navigate("/dashboard"), 1500);
+//         return;
+//       }
 
-      await registerUser(wallet, sponsor);
-      notifySuccess("Registration successful!");
-      setTimeout(() => navigate("/dashboard"), 1500);
+//       await registerUser(wallet, sponsor);
+//       notifySuccess("Registration successful!");
+//       setTimeout(() => navigate("/dashboard"), 1500);
 
-    } catch (err) {
-      console.error(err);
-      notifyError("Registration failed");
-    }
+//     } catch (err) {
+//       console.error(err);
+//       notifyError("Registration failed");
+//     }
 
-  };
+//   };
   
 
 // const handleRegister = async () => {
@@ -139,6 +139,66 @@ localStorage.setItem("wallet_login", "true");
 //   }
 
 // };
+
+
+
+const handleRegister = async () => {
+
+  let connectedWallet = wallet;
+
+  if (!connectedWallet) {
+
+    try {
+      connectedWallet = await connect();
+    } catch {
+      notifyError("Wallet connection failed");
+      return;
+    }
+
+  }
+
+  if (!connectedWallet) {
+    notifyError("Wallet not connected");
+    return;
+  }
+
+  if (!sponsor || sponsor.trim() === "") {
+    notifyError("Invitation Code is required");
+    return;
+  }
+
+  try {
+
+    const registered = await checkUserRegistered(connectedWallet);
+
+    if (registered) {
+
+      notifySuccess("Wallet already registered!");
+
+      localStorage.setItem("wallet_login", "true");
+
+      setTimeout(() => navigate("/dashboard"), 1500);
+
+      return;
+    }
+
+    await registerUser(connectedWallet, sponsor, true); // LEFT
+
+    notifySuccess("Registration successful!");
+      // localStorage.setItem("wallet_login", "true");
+
+    setTimeout(() => navigate("/dashboard"), 1500);
+
+  } catch (err) {
+
+    console.error(err);
+
+    notifyError("Registration failed");
+
+  }
+
+};
+
 
 return (
     <>

@@ -57,151 +57,305 @@ export const getUserId = async (wallet: string) => {
   }
 };
 
+// export const registerUser = async (
+//   wallet: string,
+//   sponsorWallet: string
+// ) => {
+//   const program = getProgram();
+//   const user = new PublicKey(wallet);
+//   const userPda = getUserPda(wallet);
+//   const sponsorPda = getUserPda(sponsorWallet);
+//   // const sponsorAccount = await program.account.userAccount.fetch(sponsorPda);
+//   const sponsorAccount =
+//     (await program.account.userAccount.fetch(sponsorPda)) as unknown as AnchorUserAccount;
+//   console.log("sponsorAccount", sponsorAccount);
+//   let remainingAccounts: any[] = [];
+//   let currentUpline = sponsorAccount.wallet as PublicKey;
+//   for (let i = 0; i < 10; i++) {
+//     if (currentUpline.equals(ZERO)) break;
+
+//     const uplineUserPda = getUserPda(currentUpline.toString());
+
+//     try {
+//       const upline = (await program.account.userAccount.fetch(uplineUserPda)) as unknown as AnchorUserAccount;
+
+//       remainingAccounts.push({
+//         pubkey: uplineUserPda,
+//         isWritable: true,
+//         isSigner: false,
+//       });
+
+//       console.log("Level", i + 1, upline.wallet.toBase58());
+
+//       // move to next upline
+//       currentUpline = upline.upline as PublicKey;
+//     } catch {
+//       break;
+//     }
+//   }
+//   console.log("RemainingAccountsLength:", remainingAccounts.length);
+//   console.log("RemainingAccounts:", remainingAccounts.map(a => a.pubkey.toBase58()));
+//   const tx = await program.methods
+//     .register()
+//     .accounts({
+//       signer: user,
+//       user: userPda,
+//       sponsorUser: sponsorPda,
+//       global: globalPda,
+//       systemProgram: SystemProgram.programId
+//     })
+//     .remainingAccounts(remainingAccounts)
+//     .rpc();
+
+//   return tx;
+// };
+
+
 export const registerUser = async (
   wallet: string,
-  sponsorWallet: string
+  sponsorWallet: string,
+  isLeft: boolean
 ) => {
+
   const program = getProgram();
-  const user = new PublicKey(wallet);
+
+  const signer = new PublicKey(wallet);
+
   const userPda = getUserPda(wallet);
   const sponsorPda = getUserPda(sponsorWallet);
-  // const sponsorAccount = await program.account.userAccount.fetch(sponsorPda);
+
+
   const sponsorAccount =
-    (await program.account.userAccount.fetch(sponsorPda)) as unknown as AnchorUserAccount;
-  console.log("sponsorAccount", sponsorAccount);
-  let remainingAccounts: any[] = [];
-  let currentUpline = sponsorAccount.wallet as PublicKey;
-  for (let i = 0; i < 10; i++) {
-    if (currentUpline.equals(ZERO)) break;
+    await program.account.userAccount.fetch(sponsorPda) as unknown  as AnchorUserAccount;
 
-    const uplineUserPda = getUserPda(currentUpline.toString());
+  // upline = sponsor by default
+  const uplineWallet = sponsorAccount.wallet.toBase58();
+  const uplinePda = getUserPda(uplineWallet);
 
-    try {
-      const upline = (await program.account.userAccount.fetch(uplineUserPda)) as unknown as AnchorUserAccount;
+  console.log("Sponsor PDA:", sponsorPda.toBase58());
+  console.log("Upline PDA:", uplinePda.toBase58());
 
-      remainingAccounts.push({
-        pubkey: uplineUserPda,
-        isWritable: true,
-        isSigner: false,
-      });
-
-      console.log("Level", i + 1, upline.wallet.toBase58());
-
-      // move to next upline
-      currentUpline = upline.upline as PublicKey;
-    } catch {
-      break;
-    }
-  }
-  console.log("RemainingAccountsLength:", remainingAccounts.length);
-  console.log("RemainingAccounts:", remainingAccounts.map(a => a.pubkey.toBase58()));
   const tx = await program.methods
-    .register()
+    .register(isLeft)
     .accounts({
-      signer: user,
+      signer: signer,
       user: userPda,
       sponsorUser: sponsorPda,
+      uplineUser: uplinePda,
       global: globalPda,
       systemProgram: SystemProgram.programId
     })
-    .remainingAccounts(remainingAccounts)
     .rpc();
+
+  console.log("Register TX:", tx);
 
   return tx;
 };
 
 
 
+// export const upgradePackage = async (
+//   wallet: string,
+//   newPackage: number
+// ) => {
+
+//   const program = getProgram();
+
+//   const userPubkey = new PublicKey(wallet);
+//   const userPda = getUserPda(wallet);
+
+//   // -------------------------
+//   // Fetch User Account
+//   // -------------------------
+//   let userAccount: any;
+
+//   try {
+//     userAccount = await program.account.userAccount.fetch(userPda);
+//   } catch {
+//     throw new Error("User account not found. Please register first.");
+//   }
+
+//   if (!userAccount.referrer || new PublicKey(userAccount.referrer).equals(PublicKey.default)) {
+//     throw new Error("Sponsor not found for this user.");
+//   }
+
+//   const sponsorWallet = new PublicKey(userAccount.referrer.toString());
+//   const sponsorPda = getUserPda(sponsorWallet.toString());
+
+//   const globalAccount: any = await program.account.globalState.fetch(globalPda);
+//   const ownerPubkey = new PublicKey(globalAccount.owner.toString());
+
+//   const sponsorUserAccount: any =
+//     await program.account.userAccount.fetch(sponsorPda);
+
+//   const remainingAccounts: any[] = [];
+
+//   let currentUpline =
+//     sponsorUserAccount.referrer &&
+//       !new PublicKey(sponsorUserAccount.referrer).equals(PublicKey.default)
+//       ? new PublicKey(sponsorUserAccount.referrer)
+//       : null;
+
+//   const visited = new Set<string>(); // safety to prevent infinite loops
+
+//   while (currentUpline) {
+
+//     const uplinePda = getUserPda(currentUpline.toString());
+
+//     const uplineAccount: any =
+//       await program.account.userAccount.fetch(uplinePda);
+
+//     // stop if circular reference detected
+//     if (visited.has(currentUpline.toBase58())) {
+//       break;
+//     }
+
+//     visited.add(currentUpline.toBase58());
+
+//     remainingAccounts.push({
+//       pubkey: uplinePda,
+//       isWritable: true,
+//       isSigner: false,
+//     });
+
+//     remainingAccounts.push({
+//       pubkey: new PublicKey(uplineAccount.wallet),
+//       isWritable: true,
+//       isSigner: false,
+//     });
+
+//     currentUpline =
+//       uplineAccount.referrer &&
+//         !new PublicKey(uplineAccount.referrer).equals(PublicKey.default)
+//         ? new PublicKey(uplineAccount.referrer)
+//         : null;
+//   }
+
+//   console.log(
+//     "RemainingAccounts:",
+//     remainingAccounts.map(a => a.pubkey.toBase58())
+//   );
+
+//   // -------------------------
+//   // Execute Upgrade
+//   // -------------------------
+//   const tx = await program.methods
+//     .upgrade(newPackage)
+//     .accounts({
+//       signer: userPubkey,
+//       user: userPda,
+//       sponsorUser: sponsorPda,
+//       sponsorWallet: sponsorWallet,
+//       global: globalPda,
+//       vault: vaultPda,
+//       owner: ownerPubkey,
+//       systemProgram: SystemProgram.programId,
+//     })
+//     .remainingAccounts(remainingAccounts)
+//     .rpc();
+
+//   return tx;
+// };
 
 
+// current rank
 
-export const upgradePackage = async (
-  wallet: string,
-  newPackage: number
-) => {
 
+export const upgradePackage = async (wallet: string, newPackage: number) => {
   const program = getProgram();
-
   const userPubkey = new PublicKey(wallet);
   const userPda = getUserPda(wallet);
-
+ 
   // -------------------------
   // Fetch User Account
   // -------------------------
   let userAccount: any;
-
   try {
     userAccount = await program.account.userAccount.fetch(userPda);
   } catch {
     throw new Error("User account not found. Please register first.");
   }
-
+ 
   if (!userAccount.referrer || new PublicKey(userAccount.referrer).equals(PublicKey.default)) {
     throw new Error("Sponsor not found for this user.");
   }
-
-  const sponsorWallet = new PublicKey(userAccount.referrer.toString());
-  const sponsorPda = getUserPda(sponsorWallet.toString());
-
+ 
+  const sponsorWallet = new PublicKey(userAccount.referrer);
+  const sponsorPda = getUserPda(sponsorWallet.toBase58());
+ 
+  const sponsorUserAccount: any = await program.account.userAccount.fetch(sponsorPda);
+ 
   const globalAccount: any = await program.account.globalState.fetch(globalPda);
   const ownerPubkey = new PublicKey(globalAccount.owner.toString());
-
-  const sponsorUserAccount: any =
-    await program.account.userAccount.fetch(sponsorPda);
-
-  const remainingAccounts: any[] = [];
-
-  let currentUpline =
-    sponsorUserAccount.referrer &&
-      !new PublicKey(sponsorUserAccount.referrer).equals(PublicKey.default)
-      ? new PublicKey(sponsorUserAccount.referrer)
-      : null;
-
-  const visited = new Set<string>(); // safety to prevent infinite loops
-
-  while (currentUpline) {
-
-    const uplinePda = getUserPda(currentUpline.toString());
-
-    const uplineAccount: any =
-      await program.account.userAccount.fetch(uplinePda);
-
-    // stop if circular reference detected
-    if (visited.has(currentUpline.toBase58())) {
+ 
+  // =============================
+  // REFERRER ACCOUNTS
+  // =============================
+  const MAX_LEVELS = 10;
+  let referrerAccounts: any[] = [];
+  let uplineAccounts: any[] = [];
+ 
+  // -------------------------
+  // Referrer chain
+  // -------------------------
+  let currentReferrer = sponsorWallet;
+  for (let i = 0; i < MAX_LEVELS; i++) {
+    if (currentReferrer.equals(ZERO)) break;
+ 
+    const refUserPda = getUserPda(currentReferrer.toBase58());
+    try {
+      const refUser = await program.account.userAccount.fetch(refUserPda) as unknown as AnchorUserAccount;
+ 
+      referrerAccounts.push(
+        { pubkey: refUserPda, isWritable: true, isSigner: false },
+        { pubkey: new PublicKey(refUser.wallet), isWritable: true, isSigner: false }
+      );
+ 
+      currentReferrer = new PublicKey(refUser.referrer);
+    } catch {
       break;
     }
-
-    visited.add(currentUpline.toBase58());
-
-    remainingAccounts.push({
-      pubkey: uplinePda,
-      isWritable: true,
-      isSigner: false,
-    });
-
-    remainingAccounts.push({
-      pubkey: new PublicKey(uplineAccount.wallet),
-      isWritable: true,
-      isSigner: false,
-    });
-
-    currentUpline =
-      uplineAccount.referrer &&
-        !new PublicKey(uplineAccount.referrer).equals(PublicKey.default)
-        ? new PublicKey(uplineAccount.referrer)
-        : null;
   }
-
-  console.log(
-    "RemainingAccounts:",
-    remainingAccounts.map(a => a.pubkey.toBase58())
-  );
-
+ 
+  // -------------------------
+  // Upline chain
+  // -------------------------
+  let currentUpline = sponsorUserAccount.referrer
+    ? new PublicKey(sponsorUserAccount.referrer)
+    : ZERO;
+ 
+  const visited = new Set<string>();
+  for (let i = 0; i < MAX_LEVELS; i++) {
+    if (currentUpline.equals(ZERO)) break;
+    if (visited.has(currentUpline.toBase58())) break;
+ 
+    const upUserPda = getUserPda(currentUpline.toBase58());
+    try {
+      const upUser = await program.account.userAccount.fetch(upUserPda) as unknown as AnchorUserAccount;
+ 
+      uplineAccounts.push(
+        { pubkey: upUserPda, isWritable: true, isSigner: false },
+        { pubkey: new PublicKey(upUser.wallet), isWritable: true, isSigner: false }
+      );
+ 
+      visited.add(currentUpline.toBase58());
+      currentUpline = upUser.referrer ? new PublicKey(upUser.referrer) : ZERO;
+    } catch {
+      break;
+    }
+  }
+ 
+  console.log("Referrer Accounts:", referrerAccounts.map(a => a.pubkey.toBase58()));
+  console.log("Upline Accounts:", uplineAccounts.map(a => a.pubkey.toBase58()));
+ 
+  const referrerLevelCount = referrerAccounts.length / 2;
+  const uplineLevelCount = uplineAccounts.length / 2;
+ 
   // -------------------------
   // Execute Upgrade
   // -------------------------
   const tx = await program.methods
-    .upgrade(newPackage)
+    .upgrade(newPackage, referrerLevelCount, uplineLevelCount)
     .accounts({
       signer: userPubkey,
       user: userPda,
@@ -212,14 +366,15 @@ export const upgradePackage = async (
       owner: ownerPubkey,
       systemProgram: SystemProgram.programId,
     })
-    .remainingAccounts(remainingAccounts)
+    .remainingAccounts([...referrerAccounts, ...uplineAccounts])
     .rpc();
-
+ 
+  console.log("✅ Upgrade successful");
   return tx;
 };
+ 
 
 
-// current rank
 
 export const RANK_NAMES: Record<number, string> = {
   0: "None",
