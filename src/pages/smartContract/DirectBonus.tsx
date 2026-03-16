@@ -14,44 +14,60 @@ function DirectBonus() {
   const handleOpenUpgrade = (pkg: any) => {
     setSelectedPackage(pkg);
   };
-useEffect(() => {
-   
-  const load = async () => {
-    if (!wallet) return;
-    setLoading(true);
-    const events = await getIncomeEvents();
-    console.log("events",events);
-    // 
-    const direct = events.filter(
-      (e: any) =>
-        e.incomeType?.directKick !== undefined &&
-        e.user.toBase58() === wallet
-    );
-    console.log("direct",direct);
-    const enriched = await Promise.all(
-      direct.map(async (e: any) => {
-        const fromWallet = e.from.toBase58();
-        const dboId = await getUserId(fromWallet);
 
-        return {
-          ...e,
-          dboId,
-        };
-      })
-    );
-    setRows(enriched);
+  useEffect(() => {
 
-    const data = await getUserData(wallet);
-    if (data) {
-      setUserData(data);
-    }
-    setLoading(false);
-  };
+    const load = async () => {
 
-  load();
-}, [wallet]);
+      if (!wallet) return;
 
-const handleUpgrade = async () => {
+      const data = await getUserData(wallet);
+      console.log("fdsfsfsdfs", data);
+      if (data) {
+        setUserData(data);
+      }
+
+      setLoading(true);
+      const events = await getIncomeEvents();
+      console.log("events", events);
+      console.log("fdsfsfsdfs");
+
+      // 
+      const direct = events.filter(
+        (e: any) =>
+          e.incomeType?.directKick !== undefined &&
+          e.user.toBase58() === wallet
+      );
+      console.log("direct", direct);
+      const enriched = await Promise.all(
+        direct.map(async (e: any) => {
+          const fromWallet = e.from.toBase58();
+          const dboId = await getUserId(fromWallet);
+
+          return {
+            ...e,
+            dboId,
+          };
+        })
+      );
+      setRows(enriched);
+
+      // const data = await getUserData(wallet);
+      // console.log("fdsfsfsdfs",data);
+      // if (data) {
+      //   setUserData(data);
+      // }
+      setLoading(false);
+    };
+
+
+
+
+
+    load();
+  }, [wallet]);
+
+  const handleUpgrade = async () => {
 
     if (!wallet) return;
     if (!selectedPackage) {
@@ -61,13 +77,13 @@ const handleUpgrade = async () => {
 
     try {
       const registered = await checkUserRegistered(wallet);
-      console.log("registered",registered);
+      console.log("registered", registered);
       if (registered) {
         await upgradePackage(wallet, selectedPackage.id);
         notifySuccess("Package upgraded successfully");
       }
 
-    } catch (err:any) {
+    } catch (err: any) {
       console.error(err);
       notifyError(err.message || "Upgrade failed");
     }
@@ -75,66 +91,69 @@ const handleUpgrade = async () => {
   };
   return (
     <>
-    
+
       <main>
-    <div className="container-fluid">
-      <div className="row">
-        <Sidebar onUpgradeClick={handleOpenUpgrade}/>
-        <div className="col-lg-12 col-xl-9">
-          <div className="SOL-page-title text-center"><span>Team Starter Bonus</span></div>
-           
-           <div className="row justify-content-center mb-3">
-            <div className="col-md-4 col-lg-4 col-12">
-              <div className="meme-earning-wrapper">
-                <div className="meme-earning-tab"><img src="/img/solana-icon.png" className="me-1"/>Total
-                  Income: {userData?.totalIncome ?? 0} SOL</div>
+        <div className="container-fluid">
+          <div className="row">
+            <Sidebar onUpgradeClick={handleOpenUpgrade} />
+            <div className="col-lg-12 col-xl-9">
+              <div className="SOL-page-title text-center"><span>Team Starter Bonus</span></div>
+
+              <div className="row justify-content-center mb-3">
+                <div className="col-md-4 col-lg-4 col-12">
+                  <div className="meme-earning-wrapper">
+                    <div className="meme-earning-tab"><img src={`${import.meta.env.BASE_URL}img/solana-icon.png`} className="me-1" />Total
+                      Income:
+                      {/* {userData?.totalIncome ?? 0} */}
+                      {userData?.directIncome ?? 0}
+                      SOL</div>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-          <div className="table-responsive table-style">
-            <table className="table">
-              <thead>
-                <tr>
-                  <th>S.No</th>
-                  <th>DBO ID</th>
-                  <th>Address</th>
-                  <th>Date</th>
-                  <th>Total Income</th>
+              <div className="table-responsive table-style">
+                <table className="table">
+                  <thead>
+                    <tr>
+                      <th>S.No</th>
+                      <th>DBO ID</th>
+                      <th>Address</th>
+                      <th>Date</th>
+                      <th>Total Income</th>
 
-                </tr>
-              </thead>
-              <tbody>
-                {loading ? (
-                  <tr>
-                    <td colSpan={5} className="text-center">
-                      Loading...
-                    </td>
-                  </tr>
-                ) : rows.length === 0 ? (
-                  <tr>
-                    <td colSpan={5} className="text-center">
-                      No Records Found
-                    </td>
-                  </tr>
-                ) : (
-                  rows.map((row, i) => (
-                    <tr key={i}>
-                      <td>{i + 1}</td>
-
-                      <td>{row.dboId}</td>
-
-                      <td>{shorten(row.from.toBase58())}</td>
-
-                      <td>{new Date(row.timestamp.toNumber() * 1000).toLocaleString()}</td>
-
-                      <td>{row.amount.toNumber() / 1e9} SOL</td>
                     </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
-          {/* <div className="mt-3">
+                  </thead>
+                  <tbody>
+                    {loading ? (
+                      <tr>
+                        <td colSpan={5} className="text-center">
+                          Loading...
+                        </td>
+                      </tr>
+                    ) : rows.length === 0 ? (
+                      <tr>
+                        <td colSpan={5} className="text-center">
+                          No Records Found
+                        </td>
+                      </tr>
+                    ) : (
+                      rows.map((row, i) => (
+                        <tr key={i}>
+                          <td>{i + 1}</td>
+
+                          <td>{row.dboId}</td>
+
+                          <td>{shorten(row.from.toBase58())}</td>
+
+                          <td>{new Date(row.timestamp.toNumber() * 1000).toLocaleString()}</td>
+
+                          <td>{row.amount.toNumber() / 1e9} SOL</td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
+              {/* <div className="mt-3">
             <ul className="pagination">
               <li className="page-item"><a className="page-link" href="#">Previous</a></li>
               <li className="page-item active"><a className="page-link" href="#">1</a></li>
@@ -144,20 +163,20 @@ const handleUpgrade = async () => {
             </ul>
           </div> */}
 
-          <div className="mt-3 text-muted fw-light">
-            For every successful referral, you'll earn a bonus of 0.08 SOL on partner's starter package value only.
+              <div className="mt-3 text-muted fw-light">
+                For every successful referral, you'll earn a bonus of 0.08 SOL on partner's starter package value only.
+              </div>
+
+            </div>
           </div>
-
         </div>
-      </div>
-    </div>
-  </main>
-  <UpgradeModal
-      selectedPackage={selectedPackage}
-      onUpgrade={handleUpgrade}
-    />
+      </main>
+      <UpgradeModal
+        selectedPackage={selectedPackage}
+        onUpgrade={handleUpgrade}
+      />
 
-    
+
     </>
   )
 }

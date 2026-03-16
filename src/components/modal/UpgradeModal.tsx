@@ -18,7 +18,7 @@ function UpgradeModal({ selectedPackage, onUpgrade }: UpgradeModalProps) {
             <div className="sec-divider top"></div>
             <div className="sec-divider bottom"></div>
 
-            <img src="/img/solana-icon.png" width="80" />
+            <img src={`${import.meta.env.BASE_URL}img/solana-icon.png`} width="80" />
 
             <div className="badgeStyle text-center mb-2">
               <h5>{selectedPackage?.price} SOL</h5>

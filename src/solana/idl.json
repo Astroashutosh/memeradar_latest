@@ -6,6 +6,11 @@
             "name": "initialize",
             "accounts": [
                 {
+                    "name": "owner",
+                    "isMut": true,
+                    "isSigner": true
+                },
+                {
                     "name": "global",
                     "isMut": true,
                     "isSigner": true
@@ -14,11 +19,6 @@
                     "name": "adminUser",
                     "isMut": true,
                     "isSigner": false
-                },
-                {
-                    "name": "owner",
-                    "isMut": true,
-                    "isSigner": true
                 },
                 {
                     "name": "feeReceiver",
@@ -175,6 +175,27 @@
             "args": []
         },
         {
+            "name": "distributeGlobalBonus",
+            "accounts": [
+                {
+                    "name": "admin",
+                    "isMut": true,
+                    "isSigner": true
+                },
+                {
+                    "name": "global",
+                    "isMut": true,
+                    "isSigner": false
+                },
+                {
+                    "name": "vault",
+                    "isMut": true,
+                    "isSigner": false
+                }
+            ],
+            "args": []
+        },
+        {
             "name": "withdrawVault",
             "accounts": [
                 {
@@ -228,6 +249,14 @@
                         "type": "i64"
                     },
                     {
+                        "name": "todayPointValue",
+                        "type": "u64"
+                    },
+                    {
+                        "name": "poolCalculated",
+                        "type": "bool"
+                    },
+                    {
                         "name": "todayTotalVolume",
                         "type": "u64"
                     },
@@ -258,6 +287,10 @@
                     {
                         "name": "liquidityBalance",
                         "type": "u64"
+                    },
+                    {
+                        "name": "lastGlobalDistribution",
+                        "type": "i64"
                     }
                 ]
             }
@@ -365,6 +398,18 @@
                     },
                     {
                         "name": "lapsIncome",
+                        "type": "u64"
+                    },
+                    {
+                        "name": "silverDirects",
+                        "type": "u8"
+                    },
+                    {
+                        "name": "globalSilverIncome",
+                        "type": "u64"
+                    },
+                    {
+                        "name": "globalBonus",
                         "type": "u64"
                     },
                     {
@@ -595,6 +640,16 @@
             "code": 6012,
             "name": "TooManyDirectUsers",
             "msg": "TooManyDirectUsers"
+        },
+        {
+            "code": 6013,
+            "name": "TooEarly",
+            "msg": "Too early for distribution"
+        },
+        {
+            "code": 6014,
+            "name": "NoUsers",
+            "msg": "No users in global pool"
         }
     ]
 }

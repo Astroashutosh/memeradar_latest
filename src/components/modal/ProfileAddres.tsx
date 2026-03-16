@@ -57,7 +57,7 @@ function ProfileAddres() {
 
               <div className="text-center" id="successMsg" style={{ display: "none" }}>
                 <div className="p-4">
-                  <img src="/img/animated-check.gif" width="100" className="rounded-circle" />
+                  <img src={`${import.meta.env.BASE_URL}img/animated-check.gif`} width="100" className="rounded-circle" />
                   <h5 className="text-warning"> Congratulations!</h5>
                   <p>Your email address has been verified successfully.</p>
                 </div>
@@ -98,7 +98,7 @@ function ProfileAddres() {
               </div>
               <div className="text-center" id="WTsuccessMsg" style={{ display: "none" }}>
                 <div className="p-4">
-                  <img src="/img/animated-check.gif" width="100" className="rounded-circle" />
+                  <img src={`${import.meta.env.BASE_URL}img/animated-check.gif`} width="100" className="rounded-circle" />
                   <h5 className="text-warning"> Congratulations!</h5>
                   <p>Your Whatsapp number has been verified successfully.</p>
                 </div>
@@ -136,7 +136,7 @@ function ProfileAddres() {
               </div>
               <div className="text-center" id="TLsuccessMsg" style={{ display: "none" }}>
                 <div className="p-4">
-                  <img src="/img/animated-check.gif" width="100" className="rounded-circle" />
+                  <img src={`${import.meta.env.BASE_URL}img/animated-check.gif`} width="100" className="rounded-circle" />
                   <h5 className="text-warning"> Congratulations!</h5>
                   <p>Your Telegram username has been verified successfully.</p>
                 </div>
@@ -158,9 +158,9 @@ function ProfileAddres() {
               <div className="sec-divider top"> </div>
               <div className="sec-divider bottom"> </div>
               <div className="img-group-warn">
-                <img className="big" alt="" src="/img/x-logo.png" />
-                <img className="small" alt="" src="/img/link-white-icon.png" />
-                <img className="big" alt="" src="/img/logo/logo-w.png" />
+                <img className="big" alt="" src={`${import.meta.env.BASE_URL}img/x-logo.png`} />
+                <img className="small" alt="" src={`${import.meta.env.BASE_URL}img/link-white-icon.png`} />
+                <img className="big" alt="" src={`${import.meta.env.BASE_URL}img/logo/logo-w.png`} />
               </div>
               <div className="warn-title mb-2"> Bind Your X Account</div>
               <p>Bind your X account to a Solana wallet of your choice to unlock your dashboard. </p>

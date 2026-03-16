@@ -8,18 +8,18 @@ import { checkUserRegistered } from "../solana/program";
 
 
 function Login() {
-const { connect } = useWallet();
-const navigate = useNavigate();
+  const { connect } = useWallet();
+  const navigate = useNavigate();
 
   const handleConnect = async () => {
-   
+
     try {
       const connectedWallet = await connect();
       if (!connectedWallet) {
         notifyError("Wallet not connected");
         return;
       }
-      
+
       const registered = await checkUserRegistered(connectedWallet);
 
       if (registered) {
@@ -59,8 +59,8 @@ const navigate = useNavigate();
               </div>
               <div className="login-form-body">
                 <div className="mb-3">
-                  
-                  <a href="#" className="btn btn-primary d-block"  onClick={(e) => {
+
+                  <a href="#" className="btn btn-primary d-block" onClick={(e) => {
                     e.preventDefault();
                     handleConnect();
                   }}>
@@ -68,7 +68,7 @@ const navigate = useNavigate();
                   </a>
                 </div>
                 <div className="text-center  text-white">
-                  Don't have a account? 
+                  Don't have a account?
                   <Link to="/register" className="text-underline text-white">
                     Register Now
                   </Link>

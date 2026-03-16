@@ -15,7 +15,7 @@ function RewardBoard() {
                                     <div className="col-lg-6 col-7">
                                         <div className="social-account-connect">
                                             <div className="social-account-icon">
-                                                <img src="/img/xp-icon.svg" />
+                                                <img src={`${import.meta.env.BASE_URL}img/xp-icon.svg`} />
                                             </div>
                                             <div className="head text-white">Total XP Points</div>
                                             <div className="account-handle">
@@ -34,12 +34,12 @@ function RewardBoard() {
                     <div className="row">
                         <div className="col-lg-9 col-9 mb-3">
                             <div className="text-center ">
-                                <a href="lucky-draw.html"><img src="/img/lucky-draw-participate.gif" className="rounded" /></a>
+                                <a href="lucky-draw.html"><img src={`${import.meta.env.BASE_URL}img/lucky-draw-participate.gif`} className="rounded" /></a>
                             </div>
                         </div>
                         <div className="col-lg-3  col-3 mb-3">
                             <a href="javascriptr:void();" className="winner-button-box" data-bs-toggle="modal" data-bs-target="#winnerlist" >
-                                <img src="/img/winner-button.png" />
+                                <img src={`${import.meta.env.BASE_URL}img/winner-button.png`} />
                             </a>
                         </div>
                     </div>
@@ -50,7 +50,7 @@ function RewardBoard() {
                                     <div className="frontDiv">
                                         <div className="review-web-list">
                                             <div className="review-web-icon">
-                                                <img src="/img/social-icon/login.png" />
+                                                <img src={`${import.meta.env.BASE_URL}img/social-icon/login.png`} />
                                             </div>
                                             <div className="review-web-details">
                                                 <div className="review-web-name">Platform Login</div>
@@ -64,7 +64,7 @@ function RewardBoard() {
                                     <div className="backDiv">
                                         <div className="review-web-list bg-light-yellow">
                                             <div className="review-web-icon">
-                                                <img src="/img/social-icon/login.png" />
+                                                <img src={`${import.meta.env.BASE_URL}img/social-icon/login.png`} />
                                             </div>
                                             <div className="review-web-details">
                                                 <div className="review-web-name">Platform Login</div>
@@ -83,7 +83,7 @@ function RewardBoard() {
                                     <div className="frontDiv">
                                         <div className="review-web-list">
                                             <div className="review-web-icon">
-                                                <img src="/img/social-icon/profile.png" />
+                                                <img src={`${import.meta.env.BASE_URL}img/social-icon/profile.png`} />
                                             </div>
                                             <div className="review-web-details">
                                                 <div className="review-web-name">Profile Activity</div>
@@ -97,7 +97,7 @@ function RewardBoard() {
                                     <div className="backDiv">
                                         <div className="review-web-list bg-light-yellow">
                                             <div className="review-web-icon">
-                                                <img src="/img/social-icon/profile.png" />
+                                                <img src={`${import.meta.env.BASE_URL}img/social-icon/profile.png`} />
                                             </div>
                                             <div className="review-web-details">
                                                 <div className="review-web-name">Profile Activity</div>
@@ -116,7 +116,7 @@ function RewardBoard() {
                                     <div className="frontDiv">
                                         <div className="review-web-list">
                                             <div className="review-web-icon">
-                                                <img src="/img/social-icon/X.png" />
+                                                <img src={`${import.meta.env.BASE_URL}img/social-icon/X.png`} />
                                             </div>
                                             <div className="review-web-details">
                                                 <div className="review-web-name">X (Twitter)</div>
@@ -130,7 +130,7 @@ function RewardBoard() {
                                     <div className="backDiv">
                                         <div className="review-web-list bg-light-yellow">
                                             <div className="review-web-icon">
-                                                <img src="/img/social-icon/X.png" />
+                                                <img src={`${import.meta.env.BASE_URL}img/social-icon/X.png`} />
                                             </div>
                                             <div className="review-web-details">
                                                 <div className="review-web-name">X (Twitter)</div>
@@ -149,7 +149,7 @@ function RewardBoard() {
                                     <div className="frontDiv">
                                         <div className="review-web-list">
                                             <div className="review-web-icon">
-                                                <img src="/img/social-icon/facebook.png" />
+                                                <img src={`${import.meta.env.BASE_URL}img/social-icon/facebook.png`} />
                                             </div>
                                             <div className="review-web-details">
                                                 <div className="review-web-name">Facebook</div>
@@ -163,7 +163,7 @@ function RewardBoard() {
                                     <div className="backDiv">
                                         <div className="review-web-list bg-light-yellow">
                                             <div className="review-web-icon">
-                                                <img src="/img/social-icon/facebook.png" />
+                                                <img src={`${import.meta.env.BASE_URL}img/social-icon/facebook.png`} />
                                             </div>
                                             <div className="review-web-details">
                                                 <div className="review-web-name">Facebook</div>
@@ -182,7 +182,7 @@ function RewardBoard() {
                                     <div className="frontDiv">
                                         <div className="review-web-list">
                                             <div className="review-web-icon">
-                                                <img src="/img/social-icon/youtube.png" />
+                                                <img src={`${import.meta.env.BASE_URL}img/social-icon/youtube.png`} />
                                             </div>
                                             <div className="review-web-details">
                                                 <div className="review-web-name">Youtube</div>
@@ -196,7 +196,7 @@ function RewardBoard() {
                                     <div className="backDiv">
                                         <div className="review-web-list bg-light-yellow">
                                             <div className="review-web-icon">
-                                                <img src="/img/social-icon/youtube.png" />
+                                                <img src={`${import.meta.env.BASE_URL}img/social-icon/youtube.png`} />
                                             </div>
                                             <div className="review-web-details">
                                                 <div className="review-web-name">Youtube</div>
@@ -215,7 +215,7 @@ function RewardBoard() {
                                     <div className="frontDiv">
                                         <div className="review-web-list">
                                             <div className="review-web-icon">
-                                                <img src="/img/social-icon/review.png" />
+                                                <img src={`${import.meta.env.BASE_URL}img/social-icon/review.png`} />
                                             </div>
                                             <div className="review-web-details">
                                                 <div className="review-web-name">Write Review</div>
@@ -229,7 +229,7 @@ function RewardBoard() {
                                     <div className="backDiv">
                                         <div className="review-web-list bg-light-yellow">
                                             <div className="review-web-icon">
-                                                <img src="/img/social-icon/review.png" />
+                                                <img src={`${import.meta.env.BASE_URL}img/social-icon/review.png`} />
                                             </div>
                                             <div className="review-web-details">
                                                 <div className="review-web-name">Write Review</div>
@@ -249,7 +249,7 @@ function RewardBoard() {
                                     <div className="frontDiv">
                                         <div className="review-web-list">
                                             <div className="review-web-icon">
-                                                <img src="/img/social-icon/tg.png" />
+                                                <img src={`${import.meta.env.BASE_URL}img/social-icon/tg.png`} />
                                             </div>
                                             <div className="review-web-details">
                                                 <div className="review-web-name">Telegram</div>
@@ -263,7 +263,7 @@ function RewardBoard() {
                                     <div className="backDiv">
                                         <div className="review-web-list bg-light-yellow">
                                             <div className="review-web-icon">
-                                                <img src="/img/social-icon/tg.png" />
+                                                <img src={`${import.meta.env.BASE_URL}img/social-icon/tg.png`} />
                                             </div>
                                             <div className="review-web-details">
                                                 <div className="review-web-name">Telegram </div>
@@ -284,7 +284,7 @@ function RewardBoard() {
                                     <div className="frontDiv">
                                         <div className="review-web-list">
                                             <div className="review-web-icon">
-                                                <img src="/img/social-icon/email.png" />
+                                                <img src={`${import.meta.env.BASE_URL}img/social-icon/email.png`} />
                                             </div>
                                             <div className="review-web-details">
                                                 <div className="review-web-name">Email Marketing</div>
@@ -298,7 +298,7 @@ function RewardBoard() {
                                     <div className="backDiv">
                                         <div className="review-web-list bg-light-yellow">
                                             <div className="review-web-icon">
-                                                <img src="/img/social-icon/email.png" />
+                                                <img src={`${import.meta.env.BASE_URL}img/social-icon/email.png`} />
                                             </div>
                                             <div className="review-web-details">
                                                 <div className="review-web-name">Email Marketing </div>

@@ -76,13 +76,13 @@ function MatchingBonus() {
 
     try {
       const registered = await checkUserRegistered(wallet);
-      console.log("registered",registered);
+      console.log("registered", registered);
       if (registered) {
         await upgradePackage(wallet, selectedPackage.id);
         notifySuccess("Package upgraded successfully");
       }
 
-    } catch (err:any) {
+    } catch (err: any) {
       console.error(err);
       notifyError(err.message || "Upgrade failed");
     }
@@ -95,7 +95,7 @@ function MatchingBonus() {
         <div className="container-fluid">
           <div className="row">
 
-            <Sidebar onUpgradeClick={handleOpenUpgrade}/>
+            <Sidebar onUpgradeClick={handleOpenUpgrade} />
 
             <div className="col-lg-12 col-xl-9">
               <div className="SOL-page-title text-center">
@@ -106,8 +106,8 @@ function MatchingBonus() {
                 <div className="col-md-4 col-lg-4 col-12">
                   <div className="meme-earning-wrapper">
                     <div className="meme-earning-tab">
-                      <img src="/img/solana-icon.png" className="me-1"/>
-                      Total Income: {userData?.totalIncome ?? 0} SOL
+                      <img src={`${import.meta.env.BASE_URL}img/solana-icon.png`} className="me-1" />
+                      Total Income: {userData?.directIncome ?? 0} SOL
                     </div>
                   </div>
                 </div>
@@ -133,9 +133,9 @@ function MatchingBonus() {
         </div>
       </main>
       <UpgradeModal
-      selectedPackage={selectedPackage}
-      onUpgrade={handleUpgrade}
-    />
+        selectedPackage={selectedPackage}
+        onUpgrade={handleUpgrade}
+      />
 
       {/* Modal */}
       <div className="modal fade bd-example-modal-lg" id="paydetails" tabIndex={-1}>
@@ -150,7 +150,7 @@ function MatchingBonus() {
             <div className="sec-divider bottom"></div>
 
             {/* Modal body same */}
-            
+
           </div>
         </div>
       </div>

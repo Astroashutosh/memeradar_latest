@@ -2,47 +2,47 @@ import { useEffect } from 'react'
 
 function ReadyToPump() {
 
-    useEffect(() => {
+  useEffect(() => {
 
     if (!window.Swiper) return;
 
-     // Ready To Pump
-  new window.Swiper(".VerticalSwiper", {
-    direction: "vertical",
-    spaceBetween: 10,
-    loop: true,
-    navigation: {
-      nextEl: ".Vnext",
-      prevEl: ".Vprev"
-    },
-    breakpoints: {
-      350: { slidesPerView: 1.2 },
-      768: { slidesPerView: 1.4 },
-      1024: { slidesPerView: 1.2 },
-      1320: { slidesPerView: 3.7 }
-    }
-  });
+    // Ready To Pump
+    new window.Swiper(".VerticalSwiper", {
+      direction: "vertical",
+      spaceBetween: 10,
+      loop: true,
+      navigation: {
+        nextEl: ".Vnext",
+        prevEl: ".Vprev"
+      },
+      breakpoints: {
+        350: { slidesPerView: 1.2 },
+        768: { slidesPerView: 1.4 },
+        1024: { slidesPerView: 1.2 },
+        1320: { slidesPerView: 3.7 }
+      }
+    });
 
-  // Dex Listed
-  new window.Swiper(".DexSwiper", {
-    direction: "vertical",
-    spaceBetween: 10,
-    loop: true,
-    navigation: {
-      nextEl: ".DexN",
-      prevEl: ".DexP"
-    },
-    breakpoints: {
-      350: { slidesPerView: 1.1 },
-      768: { slidesPerView: 1.8 },
-      1024: { slidesPerView: 2 },
-      1320: { slidesPerView: 4.7 }
-    }
-  });
+    // Dex Listed
+    new window.Swiper(".DexSwiper", {
+      direction: "vertical",
+      spaceBetween: 10,
+      loop: true,
+      navigation: {
+        nextEl: ".DexN",
+        prevEl: ".DexP"
+      },
+      breakpoints: {
+        350: { slidesPerView: 1.1 },
+        768: { slidesPerView: 1.8 },
+        1024: { slidesPerView: 2 },
+        1320: { slidesPerView: 4.7 }
+      }
+    });
 
 
   }, []);
- 
+
 
 
   return (
@@ -68,7 +68,7 @@ function ReadyToPump() {
                             <div className="row">
                               <div className="col-lg-4 col-3 pe-0">
                                 <a href="trade.html" className="coinpump-item-thumbs">
-                                  <img src="/img/coin/1.jfif" />
+                                  <img src={`${import.meta.env.BASE_URL}img/coin/1.jfif`} />
                                 </a>
                               </div>
                               <div className="col-lg-8 col-9 ps-0">
@@ -140,7 +140,7 @@ function ReadyToPump() {
                             <div className="row">
                               <div className="col-lg-4 col-3 pe-0">
                                 <a href="trade.html" className="coinpump-item-thumbs">
-                                  <img src="/img/coin/1.jfif" />
+                                  <img src={`${import.meta.env.BASE_URL}img/coin/1.jfif`} />
                                 </a>
                               </div>
                               <div className="col-lg-8 col-9 ps-0">
@@ -216,7 +216,7 @@ function ReadyToPump() {
                             <div className="row">
                               <div className="col-lg-4 col-3 pe-0">
                                 <a href="trade.html" className="coinpump-item-thumbs">
-                                  <img src="/img/coin/1.jfif" />
+                                  <img src={`${import.meta.env.BASE_URL}img/coin/1.jfif`} />
                                 </a>
                               </div>
                               <div className="col-lg-8 col-9 ps-0">
@@ -288,7 +288,7 @@ function ReadyToPump() {
                             <div className="row">
                               <div className="col-lg-4 col-3 pe-0">
                                 <a href="trade.html" className="coinpump-item-thumbs">
-                                  <img src="/img/coin/1.jfif" />
+                                  <img src={`${import.meta.env.BASE_URL}img/coin/1.jfif`} />
                                 </a>
                               </div>
                               <div className="col-lg-8 col-9 ps-0">
@@ -365,7 +365,7 @@ function ReadyToPump() {
                             <div className="row">
                               <div className="col-lg-4 col-3 pe-0">
                                 <a href="trade.html" className="coinpump-item-thumbs">
-                                  <img src="/img/coin/1.jfif" />
+                                  <img src={`${import.meta.env.BASE_URL}img/coin/1.jfif`} />
                                 </a>
                               </div>
                               <div className="col-lg-8 col-9 ps-0">
@@ -437,7 +437,7 @@ function ReadyToPump() {
                             <div className="row">
                               <div className="col-lg-4 col-3 pe-0">
                                 <a href="trade.html" className="coinpump-item-thumbs">
-                                  <img src="/img/coin/1.jfif" />
+                                  <img src={`${import.meta.env.BASE_URL}img/coin/1.jfif`} />
                                 </a>
                               </div>
                               <div className="col-lg-8 col-9 ps-0">
@@ -528,7 +528,7 @@ function ReadyToPump() {
                             <div className="row">
                               <div className="col-lg-4 col-3 pe-0">
                                 <a href="trade.html" className="coinpump-item-thumbs">
-                                  <img src="/img/FiveDollar-memecoin.png" />
+                                  <img src={`${import.meta.env.BASE_URL}img/FiveDollar-memecoin.png`} />
                                 </a>
                               </div>
                               <div className="col-lg-8 col-9 ps-0">
@@ -591,7 +591,7 @@ function ReadyToPump() {
                             <div className="row">
                               <div className="col-lg-4 col-3 pe-0">
                                 <a href="trade.html" className="coinpump-item-thumbs">
-                                  <img src="/img/coin/1.jfif" />
+                                  <img src={`${import.meta.env.BASE_URL}img/coin/1.jfif`} />
                                 </a>
                               </div>
                               <div className="col-lg-8 col-9 ps-0">
@@ -658,7 +658,7 @@ function ReadyToPump() {
                             <div className="row">
                               <div className="col-lg-4 col-3 pe-0">
                                 <a href="trade.html" className="coinpump-item-thumbs">
-                                  <img src="/img/coin/1.jfif" />
+                                  <img src={`${import.meta.env.BASE_URL}img/coin/1.jfif`} />
                                 </a>
                               </div>
                               <div className="col-lg-8 col-9 ps-0">
@@ -721,7 +721,7 @@ function ReadyToPump() {
                             <div className="row">
                               <div className="col-lg-4 col-3 pe-0">
                                 <a href="trade.html" className="coinpump-item-thumbs">
-                                  <img src="/img/coin/1.jfif" />
+                                  <img src={`${import.meta.env.BASE_URL}img/coin/1.jfif`} />
                                 </a>
                               </div>
                               <div className="col-lg-8 col-9 ps-0">
@@ -788,7 +788,7 @@ function ReadyToPump() {
                             <div className="row">
                               <div className="col-lg-4 col-3 pe-0">
                                 <a href="trade.html" className="coinpump-item-thumbs">
-                                  <img src="/img/coin/1.jfif" />
+                                  <img src={`${import.meta.env.BASE_URL}img/coin/1.jfif`} />
                                 </a>
                               </div>
                               <div className="col-lg-8 col-9 ps-0">
@@ -851,7 +851,7 @@ function ReadyToPump() {
                             <div className="row">
                               <div className="col-lg-4 col-3 pe-0">
                                 <a href="trade.html" className="coinpump-item-thumbs">
-                                  <img src="/img/coin/1.jfif" />
+                                  <img src={`${import.meta.env.BASE_URL}img/coin/1.jfif`} />
                                 </a>
                               </div>
                               <div className="col-lg-8 col-9 ps-0">

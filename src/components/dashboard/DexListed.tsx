@@ -13,7 +13,7 @@ function DexListed() {
                     <div className="row">
                       <div className="col-lg-4 col-3 pe-0">
                         <a href="trade.html" className="coinpump-item-thumbs">
-                          <img src="/img/FiveDollar-memecoin.png" />
+                          <img src={`${import.meta.env.BASE_URL}img/FiveDollar-memecoin.png`} />
                         </a>
                       </div>
                       <div className="col-lg-8 col-9 ps-0">
@@ -76,7 +76,7 @@ function DexListed() {
                     <div className="row">
                       <div className="col-lg-4 col-3 pe-0">
                         <a href="trade.html" className="coinpump-item-thumbs">
-                          <img src="/img/coin/1.jfif" />
+                          <img src={`${import.meta.env.BASE_URL}img/coin/1.jfif`} />
                         </a>
                       </div>
                       <div className="col-lg-8 col-9 ps-0">
@@ -143,7 +143,7 @@ function DexListed() {
                     <div className="row">
                       <div className="col-lg-4 col-3 pe-0">
                         <a href="trade.html" className="coinpump-item-thumbs">
-                          <img src="/img/coin/1.jfif" />
+                          <img src={`${import.meta.env.BASE_URL}img/coin/1.jfif`} />
                         </a>
                       </div>
                       <div className="col-lg-8 col-9 ps-0">
@@ -206,7 +206,7 @@ function DexListed() {
                     <div className="row">
                       <div className="col-lg-4 col-3 pe-0">
                         <a href="trade.html" className="coinpump-item-thumbs">
-                          <img src="/img/coin/1.jfif" />
+                          <img src={`${import.meta.env.BASE_URL}img/coin/1.jfif`} />
                         </a>
                       </div>
                       <div className="col-lg-8 col-9 ps-0">
@@ -273,7 +273,7 @@ function DexListed() {
                     <div className="row">
                       <div className="col-lg-4 col-3 pe-0">
                         <a href="trade.html" className="coinpump-item-thumbs">
-                          <img src="/img/coin/1.jfif" />
+                          <img src={`${import.meta.env.BASE_URL}img/coin/1.jfif`} />
                         </a>
                       </div>
                       <div className="col-lg-8 col-9 ps-0">
@@ -336,7 +336,7 @@ function DexListed() {
                     <div className="row">
                       <div className="col-lg-4 col-3 pe-0">
                         <a href="trade.html" className="coinpump-item-thumbs">
-                          <img src="/img/coin/1.jfif" />
+                          <img src={`${import.meta.env.BASE_URL}img/coin/1.jfif`} />
                         </a>
                       </div>
                       <div className="col-lg-8 col-9 ps-0">

@@ -18,7 +18,7 @@ function PersentationPdf() {
             <div className="col-lg-3 mt-3">
               <div className="review-web-list">
                 <div className="review-web-icon">
-                  <img src="/img/pdf.png" />
+                  <img src={`${import.meta.env.BASE_URL}img/pdf.png`} />
                 </div>
                 <div className="review-web-details">
                   <div className="review-web-name">Presentation PDF</div>

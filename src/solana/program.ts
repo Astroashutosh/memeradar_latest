@@ -57,27 +57,100 @@ export const getUserId = async (wallet: string) => {
   }
 };
 
+
+
 // export const registerUser = async (
-//   wallet: string,
-//   sponsorWallet: string
+//   wallet: PublicKey,
+//   sponsorWallet: PublicKey
 // ) => {
+
 //   const program = getProgram();
-//   const user = new PublicKey(wallet);
-//   const userPda = getUserPda(wallet);
-//   const sponsorPda = getUserPda(sponsorWallet);
-//   // const sponsorAccount = await program.account.userAccount.fetch(sponsorPda);
-//   const sponsorAccount =
-//     (await program.account.userAccount.fetch(sponsorPda)) as unknown as AnchorUserAccount;
-//   console.log("sponsorAccount", sponsorAccount);
-//   let remainingAccounts: any[] = [];
-//   let currentUpline = sponsorAccount.wallet as PublicKey;
+
+//   const userPda = getUserPda(wallet.toBase58());
+//   const sponsorPda = getUserPda(sponsorWallet.toBase58());
+
+//   console.log("User PDA:", userPda.toBase58());
+//   console.log("Sponsor PDA:", sponsorPda.toBase58());
+
+//   const sponsorUser: any =
+//     await program.account.userAccount.fetch(sponsorPda);
+
+//   if (!sponsorUser.exists) {
+//     throw new Error("Invalid Sponsor");
+//   }
+
+//   const ZERO = PublicKey.default;
+
+//   // -----------------------------
+//   // BFS MATRIX SEARCH
+//   // -----------------------------
+
+//   const queue: PublicKey[] = [sponsorWallet];
+
+//   let uplineWallet: PublicKey | null = null;
+//   let isLeft = true;
+
+//   while (queue.length > 0) {
+
+//     const current = queue.shift()!;
+
+//     const currentPda = getUserPda(current.toBase58());
+
+//     const userData: any =
+//       await program.account.userAccount.fetch(currentPda);
+
+//     const left = userData.left;
+//     const right = userData.right;
+
+//     if (left.equals(ZERO)) {
+
+//       uplineWallet = current;
+//       isLeft = true;
+//       break;
+
+//     }
+
+//     if (right.equals(ZERO)) {
+
+//       uplineWallet = current;
+//       isLeft = false;
+//       break;
+
+//     }
+
+//     queue.push(left);
+//     queue.push(right);
+
+//   }
+
+//   if (!uplineWallet) {
+//     throw new Error("Matrix full");
+//   }
+
+//   const uplinePda = getUserPda(uplineWallet.toBase58());
+
+//   console.log("Chosen Upline:", uplineWallet.toBase58());
+//   console.log("Position:", isLeft ? "LEFT" : "RIGHT");
+
+//   // -----------------------------
+//   // BUILD REMAINING ACCOUNTS
+//   // -----------------------------
+
+//   const remainingAccounts: any[] = [];
+
+//   let currentUpline = uplineWallet;
+
 //   for (let i = 0; i < 10; i++) {
+
 //     if (currentUpline.equals(ZERO)) break;
 
-//     const uplineUserPda = getUserPda(currentUpline.toString());
+//     const uplineUserPda =
+//       getUserPda(currentUpline.toBase58());
 
 //     try {
-//       const upline = (await program.account.userAccount.fetch(uplineUserPda)) as unknown as AnchorUserAccount;
+
+//       const upline: any =
+//         await program.account.userAccount.fetch(uplineUserPda);
 
 //       remainingAccounts.push({
 //         pubkey: uplineUserPda,
@@ -85,72 +158,227 @@ export const getUserId = async (wallet: string) => {
 //         isSigner: false,
 //       });
 
-//       console.log("Level", i + 1, upline.wallet.toBase58());
+//       currentUpline = upline.upline;
 
-//       // move to next upline
-//       currentUpline = upline.upline as PublicKey;
 //     } catch {
+
 //       break;
+
 //     }
+
 //   }
-//   console.log("RemainingAccountsLength:", remainingAccounts.length);
-//   console.log("RemainingAccounts:", remainingAccounts.map(a => a.pubkey.toBase58()));
+
+//   // -----------------------------
+//   // SEND TRANSACTION
+//   // -----------------------------
+
 //   const tx = await program.methods
-//     .register()
+//     .register(isLeft)
 //     .accounts({
-//       signer: user,
+//       signer: wallet,
 //       user: userPda,
 //       sponsorUser: sponsorPda,
+//       uplineUser: uplinePda,
 //       global: globalPda,
 //       systemProgram: SystemProgram.programId
 //     })
 //     .remainingAccounts(remainingAccounts)
 //     .rpc();
 
+//   console.log("Register TX:", tx);
+
+  
 //   return tx;
+
 // };
 
 
+
+
+
 export const registerUser = async (
-  wallet: string,
-  sponsorWallet: string,
-  isLeft: boolean
+  wallet: PublicKey,
+  sponsorWallet: PublicKey
 ) => {
 
   const program = getProgram();
 
-  const signer = new PublicKey(wallet);
+  const userPda = getUserPda(wallet.toBase58());
+  const sponsorPda = getUserPda(sponsorWallet.toBase58());
 
-  const userPda = getUserPda(wallet);
-  const sponsorPda = getUserPda(sponsorWallet);
+  const sponsorUser: any =
+    await program.account.userAccount.fetch(sponsorPda);
 
+  if (!sponsorUser.exists) {
+    throw new Error("Invalid Sponsor");
+  }
 
-  const sponsorAccount =
-    await program.account.userAccount.fetch(sponsorPda) as unknown  as AnchorUserAccount;
+  const ZERO = PublicKey.default;
 
-  // upline = sponsor by default
-  const uplineWallet = sponsorAccount.wallet.toBase58();
-  const uplinePda = getUserPda(uplineWallet);
+  // -----------------------------
+  // BFS MATRIX SEARCH
+  // -----------------------------
 
-  console.log("Sponsor PDA:", sponsorPda.toBase58());
-  console.log("Upline PDA:", uplinePda.toBase58());
+  const queue: PublicKey[] = [sponsorWallet];
+
+  let uplineWallet: PublicKey | null = null;
+  let isLeft = true;
+
+  while (queue.length > 0) {
+
+    const current = queue.shift()!;
+
+    const currentPda = getUserPda(current.toBase58());
+
+    const userData: any =
+      await program.account.userAccount.fetch(currentPda);
+
+    const left = userData.left;
+    const right = userData.right;
+
+    if (left.equals(ZERO)) {
+      uplineWallet = current;
+      isLeft = true;
+      break;
+    }
+
+    if (right.equals(ZERO)) {
+      uplineWallet = current;
+      isLeft = false;
+      break;
+    }
+
+    queue.push(left);
+    queue.push(right);
+
+  }
+
+  if (!uplineWallet) {
+    throw new Error("Matrix full");
+  }
+
+  const uplinePda = getUserPda(uplineWallet.toBase58());
+
+  // -----------------------------
+  // BUILD REMAINING ACCOUNTS
+  // -----------------------------
+
+  const remainingAccounts: any[] = [];
+
+  let currentUpline = uplineWallet;
+
+  for (let i = 0; i < 10; i++) {
+
+    if (currentUpline.equals(ZERO)) break;
+
+    const uplineUserPda =
+      getUserPda(currentUpline.toBase58());
+
+    try {
+
+      const upline: any =
+        await program.account.userAccount.fetch(uplineUserPda);
+
+      remainingAccounts.push({
+        pubkey: uplineUserPda,
+        isWritable: true,
+        isSigner: false,
+      });
+
+      currentUpline = upline.upline;
+
+    } catch {
+      break;
+    }
+
+  }
+
+  // -----------------------------
+  // SEND TRANSACTION
+  // -----------------------------
 
   const tx = await program.methods
     .register(isLeft)
     .accounts({
-      signer: signer,
+      signer: wallet,
       user: userPda,
       sponsorUser: sponsorPda,
       uplineUser: uplinePda,
       global: globalPda,
       systemProgram: SystemProgram.programId
     })
+    .remainingAccounts(remainingAccounts)
     .rpc();
 
   console.log("Register TX:", tx);
 
+  // ✅ WAIT FOR CONFIRMATION
+  await connection.confirmTransaction(tx, "confirmed");
+
+  // -----------------------------
+  // FETCH TX
+  // -----------------------------
+
+  const txInfo = await connection.getTransaction(tx, {
+    commitment: "confirmed",
+    maxSupportedTransactionVersion: 0
+  });
+
+  if (!txInfo?.meta?.logMessages) return tx;
+
+  // -----------------------------
+  // DECODE EVENTS
+  // -----------------------------
+
+  for (const log of txInfo.meta.logMessages) {
+
+    if (!log.startsWith("Program data:")) continue;
+
+    try {
+
+      const base64 = log.replace("Program data: ", "");
+
+      const event = program.coder.events.decode(base64);
+
+      if (event?.name === "RegisterEvent") {
+
+        const data = event.data;
+
+        console.log("Register Event:", data);
+
+        await fetch(
+          "https://demo.dsvinfosolutions.com/bullbnb-solana-design/report_api/api.php",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: new URLSearchParams({
+              table: "register",
+              action: "insert",
+              user: data.user.toBase58(),
+              referrer: data.referrer.toBase58(),
+              user_id: data.userId.toString()
+            })
+          }
+        );
+
+      }
+
+    } catch (err) {
+      console.log("Event decode error", err);
+    }
+
+  }
+
   return tx;
+
 };
+
+
+
+
+
 
 
 
@@ -265,7 +493,7 @@ export const upgradePackage = async (wallet: string, newPackage: number) => {
   const program = getProgram();
   const userPubkey = new PublicKey(wallet);
   const userPda = getUserPda(wallet);
- 
+
   // -------------------------
   // Fetch User Account
   // -------------------------
@@ -275,82 +503,82 @@ export const upgradePackage = async (wallet: string, newPackage: number) => {
   } catch {
     throw new Error("User account not found. Please register first.");
   }
- 
+
   if (!userAccount.referrer || new PublicKey(userAccount.referrer).equals(PublicKey.default)) {
     throw new Error("Sponsor not found for this user.");
   }
- 
+
   const sponsorWallet = new PublicKey(userAccount.referrer);
   const sponsorPda = getUserPda(sponsorWallet.toBase58());
- 
+
   const sponsorUserAccount: any = await program.account.userAccount.fetch(sponsorPda);
- 
+
   const globalAccount: any = await program.account.globalState.fetch(globalPda);
   const ownerPubkey = new PublicKey(globalAccount.owner.toString());
- 
+
   // =============================
   // REFERRER ACCOUNTS
   // =============================
   const MAX_LEVELS = 10;
   let referrerAccounts: any[] = [];
   let uplineAccounts: any[] = [];
- 
+
   // -------------------------
   // Referrer chain
   // -------------------------
   let currentReferrer = sponsorWallet;
   for (let i = 0; i < MAX_LEVELS; i++) {
     if (currentReferrer.equals(ZERO)) break;
- 
+
     const refUserPda = getUserPda(currentReferrer.toBase58());
     try {
       const refUser = await program.account.userAccount.fetch(refUserPda) as unknown as AnchorUserAccount;
- 
+
       referrerAccounts.push(
         { pubkey: refUserPda, isWritable: true, isSigner: false },
         { pubkey: new PublicKey(refUser.wallet), isWritable: true, isSigner: false }
       );
- 
+
       currentReferrer = new PublicKey(refUser.referrer);
     } catch {
       break;
     }
   }
- 
+
   // -------------------------
   // Upline chain
   // -------------------------
   let currentUpline = sponsorUserAccount.referrer
     ? new PublicKey(sponsorUserAccount.referrer)
     : ZERO;
- 
+
   const visited = new Set<string>();
   for (let i = 0; i < MAX_LEVELS; i++) {
     if (currentUpline.equals(ZERO)) break;
     if (visited.has(currentUpline.toBase58())) break;
- 
+
     const upUserPda = getUserPda(currentUpline.toBase58());
     try {
       const upUser = await program.account.userAccount.fetch(upUserPda) as unknown as AnchorUserAccount;
- 
+
       uplineAccounts.push(
         { pubkey: upUserPda, isWritable: true, isSigner: false },
         { pubkey: new PublicKey(upUser.wallet), isWritable: true, isSigner: false }
       );
- 
+
       visited.add(currentUpline.toBase58());
       currentUpline = upUser.referrer ? new PublicKey(upUser.referrer) : ZERO;
     } catch {
       break;
     }
   }
- 
+
   console.log("Referrer Accounts:", referrerAccounts.map(a => a.pubkey.toBase58()));
   console.log("Upline Accounts:", uplineAccounts.map(a => a.pubkey.toBase58()));
- 
+
   const referrerLevelCount = referrerAccounts.length / 2;
   const uplineLevelCount = uplineAccounts.length / 2;
- 
+
   // -------------------------
   // Execute Upgrade
   // -------------------------
@@ -368,11 +596,11 @@ export const upgradePackage = async (wallet: string, newPackage: number) => {
     })
     .remainingAccounts([...referrerAccounts, ...uplineAccounts])
     .rpc();
- 
+
   console.log("✅ Upgrade successful");
   return tx;
 };
- 
+
 
 
 
@@ -391,6 +619,7 @@ export const getUserData = async (wallet: string) => {
     const program = getProgram();
     const userPda = getUserPda(wallet);
     const account = (await program.account.userAccount.fetch(userPda).catch(() => null)) as AnchorUserAccount | null;
+    console.log("userdata is :", account);
     if (!account) {
       return null;
     }
@@ -464,6 +693,13 @@ export const getUserData = async (wallet: string) => {
       rightVolume:
         account.rightVolume.toNumber() /
         anchor.web3.LAMPORTS_PER_SOL,
+
+      carryLeft:
+        account.carryLeft.toNumber() / anchor.web3.LAMPORTS_PER_SOL,
+
+      carryRight:
+        account.carryRight.toNumber() / anchor.web3.LAMPORTS_PER_SOL,
+
       currentPackage: account.currentPackage,
       partnerCount: account.partnerCount,
       totalMatrixTeam: account.totalMatrixTeam,
@@ -532,20 +768,20 @@ export const getDirectPartners = async (wallet: string) => {
   try {
     const program = getProgram();
     const userPda = getUserPda(wallet);
- 
+
     const account: any = await program.account.userAccount.fetch(userPda);
     if (!account) return [];
- 
+
     const directs = account.directUsers || [];
- 
+
     const partners = await Promise.all(
       directs.map(async (partnerPda: PublicKey) => {
         // const walletAddr = pk.toBase58();
- 
+
         try {
           // const partnerPda = getUserPda(walletAddr);
           const partner: any = await program.account.userAccount.fetch(partnerPda);
- 
+
           return {
             wallet: partner.wallet.toBase58(),
             dboId: partner.id.toNumber(),
@@ -560,15 +796,15 @@ export const getDirectPartners = async (wallet: string) => {
         }
       })
     );
- 
+
     return partners;
- 
+
   } catch (err) {
     console.error("Error fetching direct partners:", err);
     return [];
   }
 };
- 
+
 
 
 // export const getDirectPartners = async (wallet: string) => {
@@ -714,65 +950,85 @@ export const getLevelPartners = async (
   wallet: string,
   maxLevels = 10
 ): Promise<any[][]> => {
+
   try {
+
     const program = getProgram();
+
     const levels: any[][] = [];
- 
-    let currentLevelWallets: string[] = [wallet];
- 
+
+    // first PDA
+    let currentLevelPdas: PublicKey[] = [getUserPda(wallet)];
+
     for (let level = 0; level < maxLevels; level++) {
- 
-      const nextLevelWallets: string[] = [];
+
+      const nextLevelPdas: PublicKey[] = [];
       const levelUsers: any[] = [];
- 
-      for (const w of currentLevelWallets) {
+
+      for (const pda of currentLevelPdas) {
+
         try {
-          const pda = getUserPda(w);
-          const account: any = await program.account.userAccount.fetch(pda);
- 
+
+          const account: any =
+            await program.account.userAccount.fetch(pda);
+
           const directs = account.directUsers || [];
- 
+
           for (const pk of directs) {
-            const addr = pk.toBase58();
- 
+
+            const walletAddr = pk.toBase58();
+
             try {
-              const partnerPda = getUserPda(addr);
-              const partner: any = await program.account.userAccount.fetch(partnerPda);
- 
+
+              const partnerPda = walletAddr;
+
+              const partner: any =
+                await program.account.userAccount.fetch(partnerPda);
+
               levelUsers.push({
-                wallet: addr,
+                wallet: partner.wallet.toBase58(),
                 id: partner.id.toNumber(),
                 package: partner.currentPackage,
               });
- 
-              nextLevelWallets.push(addr);
- 
+
+              nextLevelPdas.push(partnerPda);
+
             } catch {
+
               levelUsers.push({
-                wallet: addr,
+                wallet: walletAddr,
                 id: "-",
                 package: "-",
               });
- 
-              nextLevelWallets.push(addr);
+
             }
+
           }
- 
-        } catch {}
+
+        } catch (e) {
+          console.log("Level fetch error:", e);
+        }
+
       }
- 
+
       if (levelUsers.length === 0) break;
- 
+
       levels.push(levelUsers);
-      currentLevelWallets = nextLevelWallets;
+
+      currentLevelPdas = nextLevelPdas;
+
     }
- 
+
     return levels;
- 
+
   } catch (err) {
+
     console.error("getLevelPartners error:", err);
+
     return [];
+
   }
+
 };
 
 
@@ -822,6 +1078,9 @@ export const getIncomeEvents = async () => {
 
   return events;
 };
+
+
+
 
 
 const fetchUser = async (walletAddr: string | null) => {

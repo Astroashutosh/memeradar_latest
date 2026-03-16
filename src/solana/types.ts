@@ -20,6 +20,8 @@ export interface UserData {
   leftVolume: number;
   rightVolume: number;
   currentPackage: number;
+    carryLeft: number;
+  carryRight: number;
 }
 
 export interface AnchorUserAccount {

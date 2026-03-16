@@ -32,7 +32,7 @@ function MemeRadar() {
                                     <ul>
                                         <li className="d-flex justify-content-between align-items-center">
                                             <div className="fundBalance-coin d-flex">
-                                                <img src="/img/coin/solana.png" className="coinIcon" />
+                                                <img src={`${import.meta.env.BASE_URL}img/coin/solana.png`} className="coinIcon" />
                                                 <div className="ms-2">
                                                     Solana balance
                                                     <div className="small text-muted">1.4144 SOL </div>
@@ -45,7 +45,7 @@ function MemeRadar() {
 
                                         <li className="d-flex justify-content-between align-items-center">
                                             <div className="fundBalance-coin d-flex">
-                                                <img src="/img/coin/3.jpg" className="coinIcon" />
+                                                <img src={`${import.meta.env.BASE_URL}img/coin/3.jpg`} className="coinIcon" />
                                                 <div className="ms-2">
                                                     Just a Stream Guy
                                                     <div className="small text-muted">58569.24 StreamGuy </div>
@@ -58,7 +58,7 @@ function MemeRadar() {
 
                                         <li className="d-flex justify-content-between align-items-center">
                                             <div className="fundBalance-coin d-flex">
-                                                <img src="/img/coin/5.jpg" className="coinIcon" />
+                                                <img src={`${import.meta.env.BASE_URL}img/coin/5.jpg`} className="coinIcon" />
                                                 <div className="ms-2">
                                                     NFTPUB
                                                     <div className="small text-muted">9874512.24 NFTPUB </div>
@@ -70,7 +70,7 @@ function MemeRadar() {
                                         </li>
                                         <li className="d-flex justify-content-between align-items-center">
                                             <div className="fundBalance-coin d-flex">
-                                                <img src="/img/coin/6.jpg" className="coinIcon" />
+                                                <img src={`${import.meta.env.BASE_URL}img/coin/6.jpg`} className="coinIcon" />
                                                 <div className="ms-2">
                                                     NFTPUB
                                                     <div className="small text-muted">9874512.24 NFTPUB </div>
@@ -82,7 +82,7 @@ function MemeRadar() {
                                         </li>
                                         <li className="d-flex justify-content-between align-items-center">
                                             <div className="fundBalance-coin d-flex">
-                                                <img src="/img/coin/9.jpg" className="coinIcon" />
+                                                <img src={`${import.meta.env.BASE_URL}img/coin/9.jpg`} className="coinIcon" />
                                                 <div className="ms-2">
                                                     NFTPUB
                                                     <div className="small text-muted">9874512.24 NFTPUB </div>
@@ -94,7 +94,7 @@ function MemeRadar() {
                                         </li>
                                         <li className="d-flex justify-content-between align-items-center">
                                             <div className="fundBalance-coin d-flex">
-                                                <img src="/img/coin/solana.png" className="coinIcon" />
+                                                <img src={`${import.meta.env.BASE_URL}img/coin/solana.png`} className="coinIcon" />
                                                 <div className="ms-2">
                                                     Solana balance
                                                     <div className="small text-muted">1.4144 SOL </div>
@@ -106,7 +106,7 @@ function MemeRadar() {
                                         </li>
                                         <li className="d-flex justify-content-between align-items-center">
                                             <div className="fundBalance-coin d-flex">
-                                                <img src="/img/coin/3.jpg" className="coinIcon" />
+                                                <img src={`${import.meta.env.BASE_URL}img/coin/3.jpg`} className="coinIcon" />
                                                 <div className="ms-2">
                                                     Just a Stream Guy
                                                     <div className="small text-muted">58569.24 StreamGuy </div>
@@ -118,7 +118,7 @@ function MemeRadar() {
                                         </li>
                                         <li className="d-flex justify-content-between align-items-center">
                                             <div className="fundBalance-coin d-flex">
-                                                <img src="/img/coin/5.jpg" className="coinIcon" />
+                                                <img src={`${import.meta.env.BASE_URL}img/coin/5.jpg`} className="coinIcon" />
                                                 <div className="ms-2">
                                                     NFTPUB
                                                     <div className="small text-muted">9874512.24 NFTPUB </div>
@@ -130,7 +130,7 @@ function MemeRadar() {
                                         </li>
                                         <li className="d-flex justify-content-between align-items-center">
                                             <div className="fundBalance-coin d-flex">
-                                                <img src="/img/coin/6.jpg" className="coinIcon" />
+                                                <img src={`${import.meta.env.BASE_URL}img/coin/6.jpg`} className="coinIcon" />
                                                 <div className="ms-2">
                                                     NFTPUB
                                                     <div className="small text-muted">9874512.24 NFTPUB </div>
@@ -142,7 +142,7 @@ function MemeRadar() {
                                         </li>
                                         <li className="d-flex justify-content-between align-items-center">
                                             <div className="fundBalance-coin d-flex">
-                                                <img src="/img/coin/9.jpg" className="coinIcon" />
+                                                <img src={`${import.meta.env.BASE_URL}img/coin/9.jpg`} className="coinIcon" />
                                                 <div className="ms-2">
                                                     NFTPUB
                                                     <div className="small text-muted">9874512.24 NFTPUB </div>
@@ -154,7 +154,7 @@ function MemeRadar() {
                                         </li>
                                         <li className="d-flex justify-content-between align-items-center">
                                             <div className="fundBalance-coin d-flex">
-                                                <img src="/img/coin/3.jpg" className="coinIcon" />
+                                                <img src={`${import.meta.env.BASE_URL}img/coin/3.jpg`} className="coinIcon" />
                                                 <div className="ms-2">
                                                     Just a Stream Guy
                                                     <div className="small text-muted">58569.24 StreamGuy </div>
@@ -166,7 +166,7 @@ function MemeRadar() {
                                         </li>
                                         <li className="d-flex justify-content-between align-items-center">
                                             <div className="fundBalance-coin d-flex">
-                                                <img src="/img/coin/5.jpg" className="coinIcon" />
+                                                <img src={`${import.meta.env.BASE_URL}img/coin/5.jpg`} className="coinIcon" />
                                                 <div className="ms-2">
                                                     NFTPUB
                                                     <div className="small text-muted">9874512.24 NFTPUB </div>
@@ -178,7 +178,7 @@ function MemeRadar() {
                                         </li>
                                         <li className="d-flex justify-content-between align-items-center">
                                             <div className="fundBalance-coin d-flex">
-                                                <img src="/img/coin/6.jpg" className="coinIcon" />
+                                                <img src={`${import.meta.env.BASE_URL}img/coin/6.jpg`} className="coinIcon" />
                                                 <div className="ms-2">
                                                     NFTPUB
                                                     <div className="small text-muted">9874512.24 NFTPUB </div>
@@ -190,7 +190,7 @@ function MemeRadar() {
                                         </li>
                                         <li className="d-flex justify-content-between align-items-center">
                                             <div className="fundBalance-coin d-flex">
-                                                <img src="/img/coin/9.jpg" className="coinIcon" />
+                                                <img src={`${import.meta.env.BASE_URL}img/coin/9.jpg`} className="coinIcon" />
                                                 <div className="ms-2">
                                                     NFTPUB
                                                     <div className="small text-muted">9874512.24 NFTPUB </div>
