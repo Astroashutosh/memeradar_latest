@@ -59,138 +59,117 @@ export const getUserId = async (wallet: string) => {
 
 
 
-// export const registerUser = async (
-//   wallet: PublicKey,
-//   sponsorWallet: PublicKey
-// ) => {
+// api call function start 
 
-//   const program = getProgram();
 
-//   const userPda = getUserPda(wallet.toBase58());
-//   const sponsorPda = getUserPda(sponsorWallet.toBase58());
+export const handleProgramEvents = async (tx: string, program: any) => {
 
-//   console.log("User PDA:", userPda.toBase58());
-//   console.log("Sponsor PDA:", sponsorPda.toBase58());
+  await connection.confirmTransaction(tx, "confirmed");
 
-//   const sponsorUser: any =
-//     await program.account.userAccount.fetch(sponsorPda);
+  const txInfo = await connection.getTransaction(tx, {
+    commitment: "confirmed",
+    maxSupportedTransactionVersion: 0
+  });
 
-//   if (!sponsorUser.exists) {
-//     throw new Error("Invalid Sponsor");
-//   }
+  if (!txInfo?.meta?.logMessages) return;
 
-//   const ZERO = PublicKey.default;
+  for (const log of txInfo.meta.logMessages) {
 
-//   // -----------------------------
-//   // BFS MATRIX SEARCH
-//   // -----------------------------
+    if (!log.startsWith("Program data:")) continue;
 
-//   const queue: PublicKey[] = [sponsorWallet];
+    try {
 
-//   let uplineWallet: PublicKey | null = null;
-//   let isLeft = true;
+      const base64 = log.replace("Program data: ", "");
 
-//   while (queue.length > 0) {
+      const event = program.coder.events.decode(base64);
 
-//     const current = queue.shift()!;
+      if (!event) continue;
 
-//     const currentPda = getUserPda(current.toBase58());
+      const data = event.data;
 
-//     const userData: any =
-//       await program.account.userAccount.fetch(currentPda);
+      // ---------------- REGISTER EVENT ----------------
 
-//     const left = userData.left;
-//     const right = userData.right;
+      if (event.name === "RegisterEvent") {
 
-//     if (left.equals(ZERO)) {
+        await fetch(
+          "https://demo.dsvinfosolutions.com/bullbnb-solana-design/report_api/api.php",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: new URLSearchParams({
+              table: "register",
+              action: "insert",
+              user: data.user.toBase58(),
+              referrer: data.referrer.toBase58(),
+              user_id: data.userId.toString()
+            })
+          }
+        );
 
-//       uplineWallet = current;
-//       isLeft = true;
-//       break;
+      }
 
-//     }
+      // ---------------- UPGRADE EVENT ----------------
 
-//     if (right.equals(ZERO)) {
+      if (event.name === "UpgradeEvent") {
 
-//       uplineWallet = current;
-//       isLeft = false;
-//       break;
+        await fetch(
+          "https://demo.dsvinfosolutions.com/bullbnb-solana-design/report_api/api.php",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: new URLSearchParams({
+              table: "upgrade",
+              action: "insert",
+              user: data.user.toBase58(),
+              package: data.package.toString(),
+              amount: data.amount.toString()
+            })
+          }
+        );
 
-//     }
+      }
 
-//     queue.push(left);
-//     queue.push(right);
+      // ---------------- INCOME EVENT ----------------
 
-//   }
+      if (event.name === "IncomeEvent") {
 
-//   if (!uplineWallet) {
-//     throw new Error("Matrix full");
-//   }
+        const type = Object.keys(data.incomeType)[0];
 
-//   const uplinePda = getUserPda(uplineWallet.toBase58());
+        await fetch(
+          "https://demo.dsvinfosolutions.com/bullbnb-solana-design/report_api/api.php",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: new URLSearchParams({
+              table: "reports",
+              action: "insert",
+              user: data.user.toBase58(),
+              from: data.from.toBase58(),
+              income_type: type,
+              amount: data.amount.toString(),
+              package: data.package.toString(),
+              addon: data.addon.toString()
+            })
+          }
+        );
 
-//   console.log("Chosen Upline:", uplineWallet.toBase58());
-//   console.log("Position:", isLeft ? "LEFT" : "RIGHT");
+      }
 
-//   // -----------------------------
-//   // BUILD REMAINING ACCOUNTS
-//   // -----------------------------
+    } catch (err) {
+      console.log("Event decode error:", err);
+    }
 
-//   const remainingAccounts: any[] = [];
+  }
 
-//   let currentUpline = uplineWallet;
+};
 
-//   for (let i = 0; i < 10; i++) {
-
-//     if (currentUpline.equals(ZERO)) break;
-
-//     const uplineUserPda =
-//       getUserPda(currentUpline.toBase58());
-
-//     try {
-
-//       const upline: any =
-//         await program.account.userAccount.fetch(uplineUserPda);
-
-//       remainingAccounts.push({
-//         pubkey: uplineUserPda,
-//         isWritable: true,
-//         isSigner: false,
-//       });
-
-//       currentUpline = upline.upline;
-
-//     } catch {
-
-//       break;
-
-//     }
-
-//   }
-
-//   // -----------------------------
-//   // SEND TRANSACTION
-//   // -----------------------------
-
-//   const tx = await program.methods
-//     .register(isLeft)
-//     .accounts({
-//       signer: wallet,
-//       user: userPda,
-//       sponsorUser: sponsorPda,
-//       uplineUser: uplinePda,
-//       global: globalPda,
-//       systemProgram: SystemProgram.programId
-//     })
-//     .remainingAccounts(remainingAccounts)
-//     .rpc();
-
-//   console.log("Register TX:", tx);
-
-  
-//   return tx;
-
-// };
+// api call end 
 
 
 
@@ -205,6 +184,9 @@ export const registerUser = async (
 
   const userPda = getUserPda(wallet.toBase58());
   const sponsorPda = getUserPda(sponsorWallet.toBase58());
+
+  console.log("User PDA:", userPda.toBase58());
+  console.log("Sponsor PDA:", sponsorPda.toBase58());
 
   const sponsorUser: any =
     await program.account.userAccount.fetch(sponsorPda);
@@ -237,15 +219,19 @@ export const registerUser = async (
     const right = userData.right;
 
     if (left.equals(ZERO)) {
+
       uplineWallet = current;
       isLeft = true;
       break;
+
     }
 
     if (right.equals(ZERO)) {
+
       uplineWallet = current;
       isLeft = false;
       break;
+
     }
 
     queue.push(left);
@@ -258,6 +244,9 @@ export const registerUser = async (
   }
 
   const uplinePda = getUserPda(uplineWallet.toBase58());
+
+  console.log("Chosen Upline:", uplineWallet.toBase58());
+  console.log("Position:", isLeft ? "LEFT" : "RIGHT");
 
   // -----------------------------
   // BUILD REMAINING ACCOUNTS
@@ -288,7 +277,9 @@ export const registerUser = async (
       currentUpline = upline.upline;
 
     } catch {
+
       break;
+
     }
 
   }
@@ -312,68 +303,194 @@ export const registerUser = async (
 
   console.log("Register TX:", tx);
 
-  // ✅ WAIT FOR CONFIRMATION
-  await connection.confirmTransaction(tx, "confirmed");
-
-  // -----------------------------
-  // FETCH TX
-  // -----------------------------
-
-  const txInfo = await connection.getTransaction(tx, {
-    commitment: "confirmed",
-    maxSupportedTransactionVersion: 0
-  });
-
-  if (!txInfo?.meta?.logMessages) return tx;
-
-  // -----------------------------
-  // DECODE EVENTS
-  // -----------------------------
-
-  for (const log of txInfo.meta.logMessages) {
-
-    if (!log.startsWith("Program data:")) continue;
-
-    try {
-
-      const base64 = log.replace("Program data: ", "");
-
-      const event = program.coder.events.decode(base64);
-
-      if (event?.name === "RegisterEvent") {
-
-        const data = event.data;
-
-        console.log("Register Event:", data);
-
-        await fetch(
-          "https://demo.dsvinfosolutions.com/bullbnb-solana-design/report_api/api.php",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/x-www-form-urlencoded"
-            },
-            body: new URLSearchParams({
-              table: "register",
-              action: "insert",
-              user: data.user.toBase58(),
-              referrer: data.referrer.toBase58(),
-              user_id: data.userId.toString()
-            })
-          }
-        );
-
-      }
-
-    } catch (err) {
-      console.log("Event decode error", err);
-    }
-
-  }
-
+  await handleProgramEvents(tx, program);
+  
   return tx;
 
 };
+
+
+
+
+
+// export const registerUser = async (
+//   wallet: PublicKey,
+//   sponsorWallet: PublicKey
+// ) => {
+
+//   const program = getProgram();
+
+//   const userPda = getUserPda(wallet.toBase58());
+//   const sponsorPda = getUserPda(sponsorWallet.toBase58());
+
+//   const sponsorUser: any =
+//     await program.account.userAccount.fetch(sponsorPda);
+
+//   if (!sponsorUser.exists) {
+//     throw new Error("Invalid Sponsor");
+//   }
+
+//   const ZERO = PublicKey.default;
+
+//   // -----------------------------
+//   // BFS MATRIX SEARCH
+//   // -----------------------------
+
+//   const queue: PublicKey[] = [sponsorWallet];
+
+//   let uplineWallet: PublicKey | null = null;
+//   let isLeft = true;
+
+//   while (queue.length > 0) {
+
+//     const current = queue.shift()!;
+
+//     const currentPda = getUserPda(current.toBase58());
+
+//     const userData: any =
+//       await program.account.userAccount.fetch(currentPda);
+
+//     const left = userData.left;
+//     const right = userData.right;
+
+//     if (left.equals(ZERO)) {
+//       uplineWallet = current;
+//       isLeft = true;
+//       break;
+//     }
+
+//     if (right.equals(ZERO)) {
+//       uplineWallet = current;
+//       isLeft = false;
+//       break;
+//     }
+
+//     queue.push(left);
+//     queue.push(right);
+
+//   }
+
+//   if (!uplineWallet) {
+//     throw new Error("Matrix full");
+//   }
+
+//   const uplinePda = getUserPda(uplineWallet.toBase58());
+
+//   // -----------------------------
+//   // BUILD REMAINING ACCOUNTS
+//   // -----------------------------
+
+//   const remainingAccounts: any[] = [];
+
+//   let currentUpline = uplineWallet;
+
+//   for (let i = 0; i < 10; i++) {
+
+//     if (currentUpline.equals(ZERO)) break;
+
+//     const uplineUserPda =
+//       getUserPda(currentUpline.toBase58());
+
+//     try {
+
+//       const upline: any =
+//         await program.account.userAccount.fetch(uplineUserPda);
+
+//       remainingAccounts.push({
+//         pubkey: uplineUserPda,
+//         isWritable: true,
+//         isSigner: false,
+//       });
+
+//       currentUpline = upline.upline;
+
+//     } catch {
+//       break;
+//     }
+
+//   }
+
+//   // -----------------------------
+//   // SEND TRANSACTION
+//   // -----------------------------
+
+//   const tx = await program.methods
+//     .register(isLeft)
+//     .accounts({
+//       signer: wallet,
+//       user: userPda,
+//       sponsorUser: sponsorPda,
+//       uplineUser: uplinePda,
+//       global: globalPda,
+//       systemProgram: SystemProgram.programId
+//     })
+//     .remainingAccounts(remainingAccounts)
+//     .rpc();
+
+//   console.log("Register TX:", tx);
+
+//   // ✅ WAIT FOR CONFIRMATION
+//   await connection.confirmTransaction(tx, "confirmed");
+
+//   // -----------------------------
+//   // FETCH TX
+//   // -----------------------------
+
+//   const txInfo = await connection.getTransaction(tx, {
+//     commitment: "confirmed",
+//     maxSupportedTransactionVersion: 0
+//   });
+
+//   if (!txInfo?.meta?.logMessages) return tx;
+
+//   // -----------------------------
+//   // DECODE EVENTS
+//   // -----------------------------
+
+//   for (const log of txInfo.meta.logMessages) {
+
+//     if (!log.startsWith("Program data:")) continue;
+
+//     try {
+
+//       const base64 = log.replace("Program data: ", "");
+
+//       const event = program.coder.events.decode(base64);
+
+//       if (event?.name === "RegisterEvent") {
+
+//         const data = event.data;
+
+//         console.log("Register Event:", data);
+
+//         await fetch(
+//           "https://demo.dsvinfosolutions.com/bullbnb-solana-design/report_api/api.php",
+//           {
+//             method: "POST",
+//             headers: {
+//               "Content-Type": "application/x-www-form-urlencoded"
+//             },
+//             body: new URLSearchParams({
+//               table: "register",
+//               action: "insert",
+//               user: data.user.toBase58(),
+//               referrer: data.referrer.toBase58(),
+//               user_id: data.userId.toString()
+//             })
+//           }
+//         );
+
+//       }
+
+//     } catch (err) {
+//       console.log("Event decode error", err);
+//     }
+
+//   }
+
+//   return tx;
+
+// };
 
 
 
@@ -598,6 +715,11 @@ export const upgradePackage = async (wallet: string, newPackage: number) => {
     .rpc();
 
   console.log("✅ Upgrade successful");
+
+// Save Data in db
+await handleProgramEvents(tx, program);
+
+
   return tx;
 };
 

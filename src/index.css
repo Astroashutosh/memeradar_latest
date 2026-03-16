@@ -80,3 +80,30 @@ button:focus-visible {
 } */
 
 
+@media (max-width: 991px){
+
+.wsmain{
+position:fixed;
+left:-280px;
+top:0;
+width:280px;
+height:100%;
+background:#fff;
+transition:0.3s;
+overflow-y:auto;
+z-index:9999;
+}
+
+.wsmain.wsactive{
+left:0;
+}
+
+.wsmegamenu{
+display:none;
+}
+
+.sub-menu{
+display:none;
+}
+
+}
