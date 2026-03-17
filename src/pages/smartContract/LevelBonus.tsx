@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import Sidebar from '../../components/layout/smartContract/Sidebar'
 import { useWallet } from "../../solana/context/WalletContext";
-import { checkUserRegistered, upgradePackage, getUserData } from "../../solana/program";
+import { checkUserRegistered, upgradePackage, getUserData,getLevelPartners,getLevelIncome } from "../../solana/program";
 import { notifySuccess, notifyError } from "../../solana/context/Notifications";
 import UpgradeModal from "../../components/modal/UpgradeModal";
 
@@ -10,21 +10,51 @@ function LevelBonus() {
   const { wallet } = useWallet();
   const [selectedPackage, setSelectedPackage] = useState<any>(null);
   const [userData, setUserData] = useState<any>(null);
+  const [levelCounts, setLevelCounts] = useState<number[]>([]);
+const [levelIncome, setLevelIncome] = useState<Record<number, number>>({});
   const handleOpenUpgrade = (pkg: any) => {
     setSelectedPackage(pkg);
   };
-  useEffect(() => {
+  // useEffect(() => {
 
-    const load = async () => {
-      if (!wallet) return;
-      const data = await getUserData(wallet);
-      if (data) {
-        setUserData(data);
-      }
-    };
+  //   const load = async () => {
+  //     if (!wallet) return;
+  //     const data = await getUserData(wallet);
+  //     if (data) {
+  //       setUserData(data);
+  //     }
+  //   };
 
-    load();
-  }, [wallet]);
+  //   load();
+  // }, [wallet]);
+
+
+useEffect(() => {
+  const load = async () => {
+    if (!wallet) return;
+
+    const levels = await getLevelPartners(wallet, 10);
+
+    const counts = levels.map((lvl) => lvl.length);
+    setLevelCounts(counts);
+
+    let incomeObj: any = {};
+
+    for (let lvl = 2; lvl <= 10; lvl++) {
+      const inc = await getLevelIncome(wallet, lvl);
+      incomeObj[lvl] = inc;
+    }
+
+    setLevelIncome(incomeObj);
+
+    const data = await getUserData(wallet);
+    setUserData(data);
+  };
+
+  load();
+}, [wallet]);
+
+
 
   const handleUpgrade = async () => {
 
@@ -78,7 +108,7 @@ function LevelBonus() {
                       <th>Details</th>
                     </tr>
                   </thead>
-                  <tbody>
+                  {/* <tbody>
 
                     <tr>
                       <td>2 </td>
@@ -158,7 +188,41 @@ function LevelBonus() {
                       <td><strong>0.00 SOL</strong></td>
                       <td> </td>
                     </tr>
-                  </tbody>
+                  </tbody> */}
+
+<tbody>
+  {Array.from({ length: 9 }, (_, i) => {
+    const level = i + 2; // 2 se start
+    const count = levelCounts[level - 1] || 0;
+    const income = levelIncome[level] || 0;
+
+    return (
+      <tr key={level}>
+        <td>{level}</td>
+        <td>{count}</td>
+        <td>{income.toFixed(2)} SOL</td>
+        <td>
+          <a href="level-bonus-details.html" className="btn btn-primary btn-sm">
+            <i className="fa-regular fa-eye small me-1"></i>View
+          </a>
+        </td>
+      </tr>
+    );
+  })}
+
+  <tr>
+    <td><strong>Total</strong></td>
+    <td></td>
+    <td>
+      <strong>
+        {Object.values(levelIncome).reduce((a: any, b: any) => a + b, 0).toFixed(2)} SOL
+      </strong>
+    </td>
+    <td></td>
+  </tr>
+</tbody>
+
+
                 </table>
               </div>
 

@@ -3,28 +3,54 @@ import loading from '/img/green-loading.gif'
 import Sidebar from '../../components/layout/smartContract/Sidebar'
 import checkIcon from '/img/white-check-icon.png'
 import { useWallet } from "../../solana/context/WalletContext";
-import { checkUserRegistered, upgradePackage, getUserData } from "../../solana/program";
+import { checkUserRegistered, upgradePackage, getUserData,getPoolIncome ,packages } from "../../solana/program";
 import { notifySuccess, notifyError } from "../../solana/context/Notifications";
 import UpgradeModal from "../../components/modal/UpgradeModal";
 function PoolBonus() {
   const { wallet } = useWallet();
   const [selectedPackage, setSelectedPackage] = useState<any>(null);
   const [userData, setUserData] = useState<any>(null);
+  const [poolData, setPoolData] = useState<Record<number, any>>({});
   const handleOpenUpgrade = (pkg: any) => {
     setSelectedPackage(pkg);
   };
-  useEffect(() => {
+  // useEffect(() => {
 
-    const load = async () => {
-      if (!wallet) return;
-      const data = await getUserData(wallet);
-      if (data) {
-        setUserData(data);
-      }
-    };
+  //   const load = async () => {
+  //     if (!wallet) return;
+  //     const data = await getUserData(wallet);
+  //     if (data) {
+  //       setUserData(data);
+  //     }
+  //   };
 
-    load();
-  }, [wallet]);
+  //   load();
+  // }, [wallet]);
+
+
+useEffect(() => {
+  const load = async () => {
+    if (!wallet) return;
+
+    const user = await getUserData(wallet);
+    setUserData(user);
+
+    const pool = await getPoolIncome(wallet);
+
+    let dataObj: any = {};
+
+    for (let pkg = 2; pkg <= 10; pkg++) {
+      dataObj[pkg] = {
+        income: pool[pkg]?.total || 0,
+        count: pool[pkg]?.count || 0
+      };
+    }
+
+    setPoolData(dataObj);
+  };
+
+  load();
+}, [wallet]);
 
   const handleUpgrade = async () => {
 
@@ -79,77 +105,54 @@ function PoolBonus() {
                       <th>Status</th>
                     </tr>
                   </thead>
-                  <tbody>
+                 
 
-                    <tr className="bg-success">
-                      <td>2 </td>
-                      <td>Advisor  </td>
-                      <td>0</td>
-                      <td><img src={checkIcon} width="20" /></td>
-                    </tr>
-                    <tr>
-                      <td>3 </td>
-                      <td>Bronze </td>
-                      <td>0</td>
+<tbody>
+  {Array.from({ length: 9 }, (_, i) => {
+    const level = i + 2;
+    const pkg = level;
 
-                      <td><img src={loading} className="rounded-circle" width="20" /></td>
-                    </tr>
-                    <tr>
-                      <td>4 </td>
-                      <td>Silver </td>
-                      <td>0 </td>
-                      <td><img src={loading} className="rounded-circle" width="20" /></td>
-                    </tr>
-                    <tr>
-                      <td>5 </td>
-                      <td>Gold </td>
-                      <td>0 </td>
-                      <td><img src={loading} className="rounded-circle" width="20" /></td>
-                    </tr>
+    const row = poolData[pkg] || { income: 0, count: 0 };
 
-                    <tr>
-                      <td>6 </td>
-                      <td>Platinum </td>
-                      <td>0 </td>
-                      <td><img src={loading} className="rounded-circle" width="20" /></td>
-                    </tr>
+    // const required = pkg * 4; 
+    const required = (pkg - 1) * 4;
 
-                    <tr>
-                      <td>7 </td>
-                      <td>Sapphire </td>
-                      <td>0 </td>
-                      <td> - </td>
-                    </tr>
+    const isUnlocked = row.count >= required;
 
-                    <tr>
-                      <td>8 </td>
-                      <td>Diamond </td>
+    return (
+      <tr key={level} className={isUnlocked ? "bg-success" : ""}>
+        <td>{level}</td>
+        <td>{packages[pkg - 1]?.name}</td>
 
-                      <td>0 </td>
-                      <td> - </td>
-                    </tr>
-                    <tr>
-                      <td>9</td>
-                      <td>Director </td>
+    <td>{Number(row.income || 0).toFixed(2)} SOL</td>
 
-                      <td>0 </td>
-                      <td> - </td>
-                    </tr>
-                    <tr>
-                      <td>10 </td>
-                      <td>President </td>
+        <td>
+          {isUnlocked ? (
+            <img src={checkIcon} width="20" />
+          ) : (
+            <img src={loading} width="20" />
+          )}
+        </td>
+      </tr>
+    );
+  })}
 
-                      <td>0 </td>
-                      <td> - </td>
-                    </tr>
-                    <tr>
-                      <td><strong className="text-warning">Total</strong> </td>
-                      <td></td>
-                      <td><strong className="text-success">0.00 SOL</strong></td>
+  {/* TOTAL */}
+  <tr>
+    <td><strong className="text-warning">Total</strong></td>
+    <td></td>
+    <td>
+      <strong className="text-success">
+        {Object.values(poolData)
+      .reduce((sum: number, r: any) => sum + Number(r.income || 0), 0)
+          .toFixed(2)} SOL
+      </strong>
+    </td>
+    <td></td>
+  </tr>
+</tbody>
 
-                      <td> </td>
-                    </tr>
-                  </tbody>
+
                 </table>
               </div>
 

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import Sidebar from '../../components/layout/smartContract/Sidebar';
 import { useWallet } from "../../solana/context/WalletContext";
-import { getIncomeEvents, checkUserRegistered, upgradePackage, getUserData, shorten, getUserId } from "../../solana/program";
+import { checkUserRegistered, upgradePackage, getUserData, shorten,getReports  } from "../../solana/program";
 import { notifySuccess, notifyError } from "../../solana/context/Notifications";
 import UpgradeModal from "../../components/modal/UpgradeModal";
 
@@ -15,57 +15,78 @@ function DirectBonus() {
     setSelectedPackage(pkg);
   };
 
-  useEffect(() => {
+  // useEffect(() => {
 
-    const load = async () => {
+  //   const load = async () => {
 
-      if (!wallet) return;
+  //     if (!wallet) return;
 
-      const data = await getUserData(wallet);
-      console.log("fdsfsfsdfs", data);
-      if (data) {
-        setUserData(data);
-      }
+  //     const data = await getUserData(wallet);
+  //     console.log("fdsfsfsdfs", data);
+  //     if (data) {
+  //       setUserData(data);
+  //     }
 
-      setLoading(true);
-      const events = await getIncomeEvents();
-      console.log("events", events);
-      console.log("fdsfsfsdfs");
+  //     setLoading(true);
+  //     const events = await getIncomeEvents();
+  //     console.log("events", events);
+  //     console.log("fdsfsfsdfs");
 
-      // 
-      const direct = events.filter(
-        (e: any) =>
-          e.incomeType?.directKick !== undefined &&
-          e.user.toBase58() === wallet
-      );
-      console.log("direct", direct);
-      const enriched = await Promise.all(
-        direct.map(async (e: any) => {
-          const fromWallet = e.from.toBase58();
-          const dboId = await getUserId(fromWallet);
+  //     // 
+  //     const direct = events.filter(
+  //       (e: any) =>
+  //         e.incomeType?.directKick !== undefined &&
+  //         e.user.toBase58() === wallet
+  //     );
+  //     console.log("direct", direct);
+  //     const enriched = await Promise.all(
+  //       direct.map(async (e: any) => {
+  //         const fromWallet = e.from.toBase58();
+  //         const dboId = await getUserId(fromWallet);
 
-          return {
-            ...e,
-            dboId,
-          };
-        })
-      );
-      setRows(enriched);
+  //         return {
+  //           ...e,
+  //           dboId,
+  //         };
+  //       })
+  //     );
+  //     setRows(enriched);
 
-      // const data = await getUserData(wallet);
-      // console.log("fdsfsfsdfs",data);
-      // if (data) {
-      //   setUserData(data);
-      // }
-      setLoading(false);
-    };
-
-
+  //     // const data = await getUserData(wallet);
+  //     // console.log("fdsfsfsdfs",data);
+  //     // if (data) {
+  //     //   setUserData(data);
+  //     // }
+  //     setLoading(false);
+  //   };
 
 
 
-    load();
-  }, [wallet]);
+
+
+  //   load();
+  // }, [wallet]);
+
+
+useEffect(() => {
+  const load = async () => {
+    if (!wallet) return;
+
+    setLoading(true);
+
+    const data = await getUserData(wallet);
+    if (data) setUserData(data);
+
+    // 🔥 directKick only
+    const reports = await getReports(wallet, "directKick");
+
+    setRows(reports);
+
+    setLoading(false);
+  };
+
+  load();
+}, [wallet]);
 
   const handleUpgrade = async () => {
 
@@ -140,13 +161,13 @@ function DirectBonus() {
                         <tr key={i}>
                           <td>{i + 1}</td>
 
-                          <td>{row.dboId}</td>
+                          <td>{row.user_id ?? "-"}</td>
 
-                          <td>{shorten(row.from.toBase58())}</td>
+                          <td>{shorten(row.from)}</td>
 
-                          <td>{new Date(row.timestamp.toNumber() * 1000).toLocaleString()}</td>
+                          <td>{new Date(row.timestamp * 1000).toLocaleString()}</td>
 
-                          <td>{row.amount.toNumber() / 1e9} SOL</td>
+                          <td>{row.amount}  SOL</td>
                         </tr>
                       ))
                     )}

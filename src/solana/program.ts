@@ -103,7 +103,8 @@ export const handleProgramEvents = async (tx: string, program: any) => {
               action: "insert",
               user: data.user.toBase58(),
               referrer: data.referrer.toBase58(),
-              user_id: data.userId.toString()
+              user_id: data.userId.toString(),
+               country: localStorage.getItem("country") || ""
             })
           }
         );
@@ -1321,6 +1322,165 @@ export const getBinaryTree = async (wallet: string) => {
 
 
 
+export const claimMatchingBonus = async (wallet: string) => {
+  const program = getProgram();
+
+  const userPubkey = new PublicKey(wallet);
+  const userPda = getUserPda(wallet);
+
+  // const globalAccount: any = await program.account.globalState.fetch(globalPda);
+  // const ownerPubkey = new PublicKey(globalAccount.owner.toString());
+
+  const tx = await program.methods
+    .claimMatchingBonus()
+    .accounts({
+      signer: userPubkey,
+      user: userPda,
+      global: globalPda,
+      vault: vaultPda,
+      systemProgram: SystemProgram.programId,
+    })
+    .rpc();
+
+  console.log("✅ Claim Matching TX:", tx);
+
+  // events save in DB
+  await handleProgramEvents(tx, program);
+
+  return tx;
+};
+
+
+// export const getSponsorReports = async (wallet: string) => {
+//   try {
+//     const res = await fetch(
+//       "https://demo.dsvinfosolutions.com/bullbnb-solana-design/report_api/api.php",
+//       {
+//         method: "POST",
+//         headers: {
+//           "Content-Type": "application/x-www-form-urlencoded"
+//         },
+//         body: new URLSearchParams({
+//           table: "reports",
+//           action: "select",
+//           user: wallet
+//         })
+//       }
+//     );
+
+//     const data = await res.json();
+//     return data;
+
+//   } catch (err) {
+//     console.error("API Error:", err);
+//     return [];
+//   }
+// };
 
 
 
+export const getReports = async (wallet: string, type: string) => {
+  try {
+    const res = await fetch(
+      "https://demo.dsvinfosolutions.com/bullbnb-solana-design/report_api/api.php",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: new URLSearchParams({
+          table: "reports",
+          action: "select",
+          user: wallet,
+          type: type // 🔥 dynamic
+        })
+      }
+    );
+
+    return await res.json();
+  } catch (err) {
+    console.error(err);
+    return [];
+  }
+};
+
+
+
+export const getLevelIncome = async (
+  wallet: string,
+  level: number
+) => {
+  try {
+    const addon = level - 2; // 🔥 main logic
+
+    const res = await fetch(
+      "https://demo.dsvinfosolutions.com/bullbnb-solana-design/report_api/api.php",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: new URLSearchParams({
+          table: "reports",
+          action: "select",
+          user: wallet,
+          type: "level",
+          addon: addon.toString()
+        })
+      }
+    );
+
+    const data = await res.json();
+
+    const total = data.reduce((sum: number, r: any) => sum + Number(r.amount), 0);
+
+    return total;
+
+  } catch (err) {
+    console.error(err);
+    return 0;
+  }
+};
+
+
+export const getPoolIncome = async (wallet: string) => {
+  try {
+    const res = await fetch(
+      "https://demo.dsvinfosolutions.com/bullbnb-solana-design/report_api/api.php",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: new URLSearchParams({
+          table: "reports",
+          action: "select",
+          user: wallet,
+          type: "pool"
+        })
+      }
+    );
+
+    const data = await res.json();
+
+    // group by package
+    let result: any = {};
+
+    data.forEach((r: any) => {
+      const pkg = Number(r.package);
+
+      if (!result[pkg]) {
+        result[pkg] = { total: 0, count: 0 };
+      }
+
+      result[pkg].total += Number(r.amount || 0);
+      result[pkg].count += 1;
+    });
+
+    return result;
+
+  } catch (err) {
+    console.error("API ERROR:", err);
+    return {};
+  }
+};

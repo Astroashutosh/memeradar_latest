@@ -4,7 +4,7 @@ import $ from "jquery";
 import "datatables.net-bs5";
 import "datatables.net-bs5/css/dataTables.bootstrap5.min.css";
 import { useWallet } from "../../solana/context/WalletContext";
-import { checkUserRegistered, upgradePackage, getUserData } from "../../solana/program";
+import { checkUserRegistered, upgradePackage, getUserData,getReports } from "../../solana/program";
 import { notifySuccess, notifyError } from "../../solana/context/Notifications";
 import UpgradeModal from "../../components/modal/UpgradeModal";
 
@@ -18,54 +18,121 @@ function MatchingBonus() {
     setSelectedPackage(pkg);
   };
 
-  useEffect(() => {
+  // useEffect(() => {
 
-    const load = async () => {
-      if (!wallet) return;
-      // setLoading(true);
-      // const events = await getIncomeEvents();
-      // const sponsor = events.filter(
-      //   (e: any) =>
-      //     e.incomeType?.sponsor !== undefined &&
-      //     e.user.toBase58() === wallet
-      // );
-      // console.log("sponsor",sponsor);
-      // const enriched = await Promise.all(
-      //   sponsor.map(async (e: any) => {
-      //     const fromWallet = e.from.toBase58();
-      //     const dboId = await getUserId(fromWallet);
+  //   const load = async () => {
+  //     if (!wallet) return;
+  //     // setLoading(true);
+  //     // const events = await getIncomeEvents();
+  //     // const sponsor = events.filter(
+  //     //   (e: any) =>
+  //     //     e.incomeType?.sponsor !== undefined &&
+  //     //     e.user.toBase58() === wallet
+  //     // );
+  //     // console.log("sponsor",sponsor);
+  //     // const enriched = await Promise.all(
+  //     //   sponsor.map(async (e: any) => {
+  //     //     const fromWallet = e.from.toBase58();
+  //     //     const dboId = await getUserId(fromWallet);
 
-      //     return {
-      //       ...e,
-      //       dboId,
-      //     };
-      //   })
-      // );
-      // setRows(enriched);
-      const data = await getUserData(wallet);
-      if (data) {
-        setUserData(data);
-      }
-      // setLoading(false);
-    };
+  //     //     return {
+  //     //       ...e,
+  //     //       dboId,
+  //     //     };
+  //     //   })
+  //     // );
+  //     // setRows(enriched);
+  //     const data = await getUserData(wallet);
+  //     if (data) {
+  //       setUserData(data);
+  //     }
+  //     // setLoading(false);
+  //   };
 
-    load();
+  //   load();
 
-    const table = ($('#example') as any).DataTable({
-      lengthMenu: [
-        [10, 30, 50, 100, 200, -1],
-        [10, 30, 50, 100, 200, "All"]
-      ],
-      pageLength: 10
-    });
+  //   const table = ($('#example') as any).DataTable({
+  //     lengthMenu: [
+  //       [10, 30, 50, 100, 200, -1],
+  //       [10, 30, 50, 100, 200, "All"]
+  //     ],
+  //     pageLength: 10
+  //   });
 
-    return () => {
-      if ($.fn.DataTable.isDataTable('#example')) {
-        table.destroy();
-      }
-    };
+  //   return () => {
+  //     if ($.fn.DataTable.isDataTable('#example')) {
+  //       table.destroy();
+  //     }
+  //   };
 
-  }, [wallet]);
+  // }, [wallet]);
+
+
+useEffect(() => {
+  const load = async () => {
+    if (!wallet) return;
+
+    const data = await getUserData(wallet);
+    if (data) setUserData(data);
+
+    // 🔥 matching data fetch
+    const reports = await getReports(wallet, "matching");
+
+    // destroy old table if exists
+    if ($.fn.DataTable.isDataTable('#example')) {
+      ($('#example') as any).DataTable().destroy();
+    }
+
+    // 🔥 init DataTable with dynamic data
+    setTimeout(() => {
+      ($('#example') as any).DataTable({
+        data: reports,
+        columns: [
+          {
+            data: "package",
+            render: (pkg: number) => `Level ${pkg}`
+          },
+          {
+            data: "from",
+            render: (val: string) =>
+              val ? val.slice(0, 4) + "..." + val.slice(-4) : "-"
+          },
+          {
+            data: "amount",
+            render: (amt: number) =>
+              `${Number(amt || 0).toFixed(2)} SOL`
+          },
+          {
+            data: "timestamp",
+            render: (t: number) =>
+              new Date(t * 1000).toLocaleString()
+          },
+          {
+            data: "timestamp",
+            render: (t: number) =>
+              new Date(t * 1000).toLocaleString()
+          }
+        ],
+        lengthMenu: [
+          [10, 30, 50, 100, 200, -1],
+          [10, 30, 50, 100, 200, "All"]
+        ],
+        pageLength: 10,
+        destroy: true
+      });
+    }, 100);
+  };
+
+  load();
+
+  return () => {
+    if ($.fn.DataTable.isDataTable('#example')) {
+      ($('#example') as any).DataTable().destroy();
+    }
+  };
+}, [wallet]);
+
+
 
   const handleUpgrade = async () => {
     if (!wallet) return;

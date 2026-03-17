@@ -1,0 +1,43 @@
+if($action == "select"){
+
+    $user = $_POST['user'] ?? '';
+    $type = $_POST['type'] ?? ''; 
+
+    $sql = "
+        SELECT 
+            r.*, 
+            reg.user_id 
+        FROM reports r
+        LEFT JOIN register reg 
+            ON r.from = reg.user
+        WHERE r.user = ? 
+    ";
+
+
+    if(!empty($type)){
+        $sql .= " AND r.income_type = ?";
+    }
+
+    $sql .= " ORDER BY r.id DESC";
+
+    $stmt = mysqli_prepare($conn, $sql);
+
+    if(!empty($type)){
+        mysqli_stmt_bind_param($stmt, "ss", $user, $type);
+    } else {
+        mysqli_stmt_bind_param($stmt, "s", $user);
+    }
+
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+
+    $data = [];
+
+    while($row = mysqli_fetch_assoc($result)){
+        $row['amount'] = $row['amount'] / 1000000000;
+        $data[] = $row;
+    }
+
+    $response = $data;
+}
+  

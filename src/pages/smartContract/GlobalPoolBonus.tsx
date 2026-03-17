@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import Sidebar from '../../components/layout/smartContract/Sidebar';
 import { useWallet } from "../../solana/context/WalletContext";
-import { getIncomeEvents, checkUserRegistered, upgradePackage, getUserData } from "../../solana/program";
+import { getReports, checkUserRegistered, upgradePackage, getUserData } from "../../solana/program";
 import { notifySuccess, notifyError } from "../../solana/context/Notifications";
 import UpgradeModal from "../../components/modal/UpgradeModal";
 
@@ -14,28 +14,49 @@ function GlobalPoolBonus() {
   const handleOpenUpgrade = (pkg: any) => {
     setSelectedPackage(pkg);
   };
-  useEffect(() => {
+  // useEffect(() => {
       
-    const load = async () => {
-      if (!wallet) return;
-      setLoading(true);
-      const events = await getIncomeEvents();
-      const globalPool = events.filter(
-        (e: any) =>
-          e.incomeType?.silverBonus !== undefined &&
-          e.user.toBase58() === wallet
-      );
-      setRows(globalPool);
-      const data = await getUserData(wallet);
-      if (data) {
-        setUserData(data);
-      }
-      setLoading(false);
-    };
+  //   const load = async () => {
+  //     if (!wallet) return;
+  //     setLoading(true);
+  //     const events = await getIncomeEvents();
+  //     const globalPool = events.filter(
+  //       (e: any) =>
+  //         e.incomeType?.silverBonus !== undefined &&
+  //         e.user.toBase58() === wallet
+  //     );
+  //     setRows(globalPool);
+  //     const data = await getUserData(wallet);
+  //     if (data) {
+  //       setUserData(data);
+  //     }
+  //     setLoading(false);
+  //   };
   
-    load();
-  }, [wallet]);
+  //   load();
+  // }, [wallet]);
   
+
+useEffect(() => {
+  const load = async () => {
+    if (!wallet) return;
+
+    setLoading(true);
+
+    // 🔥 DB se silver income fetch
+    const reports = await getReports(wallet, "silver");
+
+    setRows(reports);
+
+    const data = await getUserData(wallet);
+    if (data) setUserData(data);
+
+    setLoading(false);
+  };
+
+  load();
+}, [wallet]);
+
   const handleUpgrade = async () => {
   
       if (!wallet) return;
@@ -110,8 +131,8 @@ function GlobalPoolBonus() {
                   {/* <td className="nowrap">0x3119...C768a<a href="#!" className="ms-2" title="Copy Address"><i
                         className="bi bi-copy"></i></a><a href="#!" className="ms-2" title="Open Address"><i
                         className="bi bi-box-arrow-up-right"></i></a></td> */}
-                  <td className="nowrap">{new Date(row.timestamp.toNumber() * 1000).toLocaleString()} </td>
-                  <td>{row.amount.toNumber() / 1e9} SOL</td>
+                  <td className="nowrap"> {new Date(row.timestamp * 1000).toLocaleString()}</td>
+                  <td> {Number(row.amount || 0).toFixed(2)} SOL</td>
 
                 </tr>
                 // <tr>

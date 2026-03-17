@@ -4,7 +4,7 @@ import iconRed from '/img/tree-icon/red.png'
 import iconBlack from '/img/tree-icon/blank.png'
 import { useWallet } from "../../solana/context/WalletContext";
 import { getBinaryTree, packages, getUserData } from "../../solana/program";
-
+import iconGold from '/img/tree-icon/golden.png'
 function TeamTree() {
   const { wallet } = useWallet();
   const [userData, setUserData] = useState<any>(null);
@@ -28,54 +28,126 @@ function TeamTree() {
 
     loadTree();
   }, [wallet]);
-  const loadTree = async () => {
+  // const loadTree = async () => {
 
-    if (!wallet) return;
+  //   if (!wallet) return;
 
-    setLoading(true);
+  //   setLoading(true);
 
-    try {
-      const user = await getUserData(wallet);
-      setUserData(user);
-      const treeData = await getBinaryTree(wallet);
-      setTree(treeData);
+  //   try {
+  //     const user = await getUserData(wallet);
+  //     setUserData(user);
+  //     const treeData = await getBinaryTree(wallet);
+  //     setTree(treeData);
 
-    } catch (err) {
-      console.error("Tree load error:", err);
-    }
+  //   } catch (err) {
+  //     console.error("Tree load error:", err);
+  //   }
 
-    setLoading(false);
+  //   setLoading(false);
 
-  };
+  // };
+
+  // const node = (user?: any) => {
+  //   if (!user || user.id === "-" || user.id === undefined) {
+  //     return {
+  //       icon: iconBlack,
+  //       id: "-",
+  //       rank: "Vacant"
+  //     };
+  //   }
+
+  //   return {
+  //     icon: iconGreen,
+  //     id: user.id,
+  //     rank: packages[user.package - 1]?.name || "No rank"
+  //   };
+  // };
+
+
+const loadTree = async (targetWallet?: string) => {
+
+  const useWalletAddr = targetWallet || wallet;
+
+  if (!useWalletAddr) return;
+
+  setLoading(true);
+
+  try {
+    const user = await getUserData(useWalletAddr);
+    setUserData(user);
+
+    const treeData = await getBinaryTree(useWalletAddr);
+    setTree(treeData);
+
+  } catch (err) {
+    console.error("Tree load error:", err);
+  }
+
+  setLoading(false);
+};
 
   const node = (user?: any) => {
-    if (!user || user.id === "-" || user.id === undefined) {
-      return {
-        icon: iconBlack,
-        id: "-",
-        rank: "Vacant"
-      };
-    }
 
+  // ❌ Vacant
+  if (!user || user.id === "-" || user.id === undefined) {
+    return {
+      icon: iconBlack,
+      id: "-",
+      rank: "Vacant",
+      className: "my-member",
+      wallet: null
+    };
+  }
+
+  const pkg = user.package;
+  const rankName = packages[pkg - 1]?.name || "No rank";
+
+  // 🟢 Silver+
+  if (pkg >= 4) {
     return {
       icon: iconGreen,
       id: user.id,
-      rank: packages[user.package - 1]?.name || "No rank"
+      rank: rankName,
+      className: "my-member green",
+      wallet: user.wallet
     };
+  }
+
+  // 🟡 Starter group
+  if (pkg >= 1 && pkg <= 3) {
+    return {
+      icon: iconGold,
+      id: user.id,
+      rank: rankName,
+      className: "my-member gold",
+      wallet: user.wallet
+    };
+  }
+
+  // 🔴 Free DBO
+  return {
+    icon: iconRed,
+    id: user.id,
+    rank: "Free DBO",
+    className: "my-member myFreeID",
+    wallet: user.wallet
   };
+};
+
 
   if (loading) {
     return <div className="text-center p-5">Loading Tree...</div>;
   }
 
-  const L = node(tree?.left);
-  const R = node(tree?.right);
+  // const L = node(tree?.left);
+  // const R = node(tree?.right);
 
-  const LL = node(tree?.leftLeft);
-  const LR = node(tree?.leftRight);
+  // const LL = node(tree?.leftLeft);
+  // const LR = node(tree?.leftRight);
 
-  const RL = node(tree?.rightLeft);
-  const RR = node(tree?.rightRight);
+  // const RL = node(tree?.rightLeft);
+  // const RR = node(tree?.rightRight);
   const days = Array.from({ length: 31 }, (_, i) => (i + 1).toString());
   const months = [
     "January", "February", "March", "April", "May", "June",
@@ -88,7 +160,7 @@ function TeamTree() {
       <main>
         <div className="container-fluid">
           <div className="row">
-            <div className="col-lg-8 col-xl-8">
+            {/* <div className="col-lg-8 col-xl-8">
               <div className="SOL-page-title text-center"><span>My Team Tree </span></div>
               <div className="display-wrapper">
                 <div className="row">
@@ -219,7 +291,230 @@ function TeamTree() {
                   </div>
                 </div>
               </div>
+            </div> */}
+
+
+<div className="col-lg-8 col-xl-8">
+  <div className="SOL-page-title text-center">
+    <span>My Team Tree </span>
+  </div>
+
+  <div className="display-wrapper">
+
+    {/* 🔍 SEARCH + BUTTON SAME */}
+    <div className="row">
+      <div className="col-lg-12 mx-auto">
+        <div className="search-container mb-3">
+          <div className="row">
+            <div className="col-md-8 col-lg-8 col-xl-9 pe-md-0 pe-xl-0 pe-lg-0">
+              <div className="search-id-wrapper mb-2 mb-md-0 mb-lg-0">
+                <input placeholder="Enter DBO ID" />
+                <a className="search-icon"><i className="bi bi-search"></i></a>
+              </div>
             </div>
+
+            <div className="col-md-4 col-lg-4 col-xl-3 text-center">
+              <a
+                href="#!"
+                onClick={(e) => {
+                  e.preventDefault();
+                  // loadTree(wallet);
+                  if (wallet) {
+  loadTree(wallet);
+}
+                }}
+                className="btn btn-outline-dark text-white float-start w-50"
+              >
+                <i className="bi bi-arrow-90deg-up me-1"></i>TOP
+              </a>
+
+              <a href="#!" className="btn btn-outline-dark text-white float-end w-50">
+                <i className="bi bi-arrow-bar-up me-1"></i>UPLINE
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {/* ROOT */}
+    <div className="row">
+      <div className="col-sm-2 col-4 mx-auto">
+        <div className="my-team">
+          <div className="center-border"></div>
+
+          {(() => {
+            const root = node(tree?.root);
+            return (
+              <div className={root.className}>
+                <a href="#" onClick={(e) => {
+                  e.preventDefault();
+                  loadTree(root.wallet);
+                }}>
+                  <img src={root.icon} />
+                  <span>{root.id}</span>
+                  <div className="my-member-rank">{root.rank}</div>
+                </a>
+              </div>
+            );
+          })()}
+
+        </div>
+      </div>
+    </div>
+
+    {/* LEVEL 1 */}
+    <div className="row">
+      <div className="col-6 col-sm-6">
+        <div className="my-team">
+          <div className="center-border"></div>
+          <div className="right-border"></div>
+
+          {(() => {
+            const n = node(tree?.left);
+            return (
+              <div className={n.className}>
+                <a href="#" onClick={(e) => {
+                  e.preventDefault();
+                  loadTree(n.wallet);
+                }}>
+                  <img src={n.icon} />
+                  <span>{n.id}</span>
+                  <div className="my-member-rank">{n.rank}</div>
+                </a>
+              </div>
+            );
+          })()}
+
+        </div>
+
+        {/* LEFT CHILDREN */}
+        <div className="row">
+          <div className="col-6 col-sm-6">
+            <div className="my-team">
+              <div className="right-border"></div>
+
+              {(() => {
+                const n = node(tree?.leftLeft);
+                return (
+                  <div className={n.className}>
+                    <a href="#" onClick={(e) => {
+                      e.preventDefault();
+                      loadTree(n.wallet);
+                    }}>
+                      <img src={n.icon} />
+                      <span>{n.id}</span>
+                      <div className="my-member-rank">{n.rank}</div>
+                    </a>
+                  </div>
+                );
+              })()}
+
+            </div>
+          </div>
+
+          <div className="col-6 col-sm-6">
+            <div className="my-team">
+              <div className="my-member-left"></div>
+
+              {(() => {
+                const n = node(tree?.leftRight);
+                return (
+                  <div className={n.className}>
+                    <a href="#" onClick={(e) => {
+                      e.preventDefault();
+                      loadTree(n.wallet);
+                    }}>
+                      <img src={n.icon} />
+                      <span>{n.id}</span>
+                      <div className="my-member-rank">{n.rank}</div>
+                    </a>
+                  </div>
+                );
+              })()}
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* RIGHT SIDE */}
+      <div className="col-6 col-sm-6">
+        <div className="my-team">
+          <div className="center-border"></div>
+          <div className="my-member-left"></div>
+
+          {(() => {
+            const n = node(tree?.right);
+            return (
+              <div className={n.className}>
+                <a href="#" onClick={(e) => {
+                  e.preventDefault();
+                  loadTree(n.wallet);
+                }}>
+                  <img src={n.icon} />
+                  <span>{n.id}</span>
+                  <div className="my-member-rank">{n.rank}</div>
+                </a>
+              </div>
+            );
+          })()}
+
+        </div>
+
+        <div className="row">
+          <div className="col-6 col-sm-6">
+            <div className="my-team">
+              <div className="right-border"></div>
+
+              {(() => {
+                const n = node(tree?.rightLeft);
+                return (
+                  <div className={n.className}>
+                    <a href="#" onClick={(e) => {
+                      e.preventDefault();
+                      loadTree(n.wallet);
+                    }}>
+                      <img src={n.icon} />
+                      <span>{n.id}</span>
+                      <div className="my-member-rank">{n.rank}</div>
+                    </a>
+                  </div>
+                );
+              })()}
+
+            </div>
+          </div>
+
+          <div className="col-6 col-sm-6">
+            <div className="my-team">
+              <div className="my-member-left"></div>
+
+              {(() => {
+                const n = node(tree?.rightRight);
+                return (
+                  <div className={n.className}>
+                    <a href="#" onClick={(e) => {
+                      e.preventDefault();
+                      loadTree(n.wallet);
+                    }}>
+                      <img src={n.icon} />
+                      <span>{n.id}</span>
+                      <div className="my-member-rank">{n.rank}</div>
+                    </a>
+                  </div>
+                );
+              })()}
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
             <div className="col-lg-4 col-xl-4 mt-0 mt-lg-3">
               <div className="style-wrapper mb-3">
                 <div className="badgeStyle text-center mb-2">
@@ -411,3 +706,5 @@ function TeamTree() {
 }
 
 export default TeamTree
+
+

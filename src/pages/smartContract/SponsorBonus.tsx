@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import Sidebar from '../../components/layout/smartContract/Sidebar'
 import { useWallet } from "../../solana/context/WalletContext";
-import { getIncomeEvents, checkUserRegistered, upgradePackage, getUserData, packages, shorten, getUserId } from "../../solana/program";
+import {  checkUserRegistered, upgradePackage, getUserData, packages, shorten,getReports  } from "../../solana/program";
 import { notifySuccess, notifyError } from "../../solana/context/Notifications";
 import UpgradeModal from "../../components/modal/UpgradeModal";
 
@@ -14,44 +14,64 @@ function SponsorBonus() {
   const handleOpenUpgrade = (pkg: any) => {
     setSelectedPackage(pkg);
   };
-  useEffect(() => {
+  // useEffect(() => {
 
-    const load = async () => {
-      if (!wallet) return;
-      const data = await getUserData(wallet);
-      if (data) {
-        setUserData(data);
-      }
-      setLoading(true);
-      const events = await getIncomeEvents();
-      const sponsor = events.filter(
-        (e: any) =>
-          e.incomeType?.sponsor !== undefined &&
-          e.user.toBase58() === wallet
-      );
-      // console.log("sponsor",sponsor);
-      const enriched = await Promise.all(
-        sponsor.map(async (e: any) => {
-          const fromWallet = e.from.toBase58();
-          const dboId = await getUserId(fromWallet);
+  //   const load = async () => {
+  //     if (!wallet) return;
+  //     const data = await getUserData(wallet);
+  //     if (data) {
+  //       setUserData(data);
+  //     }
+  //     setLoading(true);
+  //     const events = await getIncomeEvents();
+  //     const sponsor = events.filter(
+  //       (e: any) =>
+  //         e.incomeType?.sponsor !== undefined &&
+  //         e.user.toBase58() === wallet
+  //     );
+  //     // console.log("sponsor",sponsor);
+  //     const enriched = await Promise.all(
+  //       sponsor.map(async (e: any) => {
+  //         const fromWallet = e.from.toBase58();
+  //         const dboId = await getUserId(fromWallet);
 
-          return {
-            ...e,
-            dboId,
-          };
-        })
-      );
-      setRows(enriched);
-      // const data = await getUserData(wallet);
-      // if (data) {
-      //   setUserData(data);
-      // }
-      setLoading(false);
-    };
+  //         return {
+  //           ...e,
+  //           dboId,
+  //         };
+  //       })
+  //     );
+  //     setRows(enriched);
+  //     // const data = await getUserData(wallet);
+  //     // if (data) {
+  //     //   setUserData(data);
+  //     // }
+  //     setLoading(false);
+  //   };
 
-    load();
-  }, [wallet]);
+  //   load();
+  // }, [wallet]);
 
+
+useEffect(() => {
+  const load = async () => {
+    if (!wallet) return;
+
+    setLoading(true);
+
+    const data = await getUserData(wallet);
+    if (data) setUserData(data);
+
+    // 🔥 SAME LOGIC (just type change)
+    const reports = await getReports(wallet, "sponsor");
+
+    setRows(reports);
+
+    setLoading(false);
+  };
+
+  load();
+}, [wallet]);
   const handleUpgrade = async () => {
 
     if (!wallet) return;
@@ -119,13 +139,13 @@ function SponsorBonus() {
                     ) : (rows.map((row, i) => (
                       <tr key={i}>
                         <td>{i + 1}</td>
-                        <td>{row.dboId}</td>
-                        <td>{packages[row.from.package - 1]?.name || "-"}</td>
-                        <td className="nowrap">{shorten(row.from.toBase58())}<a href="#!" className="ms-2" title="Copy Address"><i
+                        <td>{row.user_id ?? "-"}</td>
+                        <td>{packages[row.package - 1]?.name || "-"}</td>
+                        <td className="nowrap">{shorten(row.from)}<a href="#!" className="ms-2" title="Copy Address"><i
                           className="bi bi-copy"></i></a><a href="#!" className="ms-2" title="Open Address"><i
                             className="bi bi-box-arrow-up-right"></i></a></td>
 
-                        <td>{row.amount.toNumber() / 1e9} SOL
+                        <td>{row.amount} SOL
                           {/* <a href="#!" className="btn btn-primary btn-sm ms-1" data-bs-toggle="modal"
                         data-bs-target="#paydetails">Details</a> */}
                         </td>

@@ -6,7 +6,7 @@ import { useWallet } from "../../solana/context/WalletContext";
 
 import { useLegacyCountdown } from "../../utils/helpers";
 import { notifySuccess, notifyError } from "../../solana/context/Notifications";
-import { checkUserRegistered, packages, upgradePackage, getUserData } from "../../solana/program";
+import { checkUserRegistered, packages, upgradePackage, getUserData,claimMatchingBonus } from "../../solana/program";
 import UpgradeModal from "../../components/modal/UpgradeModal";
 function SmartContract() {
   const { wallet } = useWallet();
@@ -14,7 +14,8 @@ function SmartContract() {
   const [userData, setUserData] = useState<any>(null);
   const [userPackage, setUserPackage] = useState<number>(0);
   const { countdown, countdown1 } = useLegacyCountdown();
-
+// const [showClaimModal, setShowClaimModal] = useState(false);
+// const [loading, setLoading] = useState(false);
   const handleSelectPackage = (pkg: any) => {
     if (userPackage >= pkg.id) {
       notifyError("Package already active");
@@ -64,6 +65,77 @@ function SmartContract() {
     }
 
   };
+
+// claim now
+// const canClaim = () => {
+//   if (!userData) return false;
+
+//   return (
+//     userData.rank !== "None" &&
+//     userData.nextBonus > 0
+//   );
+// };
+const handleClaimMatching = async () => {
+  if (!wallet) return;
+
+
+  // if (userData?.rank === "None") {
+  //   notifyError("Upgrade to Silver to claim matching bonus");
+  //   return;
+  // }
+
+
+  try {
+    // setLoading(true);
+
+   await claimMatchingBonus(wallet);
+
+    notifySuccess("Matching bonus claimed successfully");
+
+    // refresh user data
+    const updated = await getUserData(wallet);
+    setUserData(updated);
+
+ } catch (err: any) {
+  console.error("Full Error:", err);
+
+  let errorMsg = "Claim failed";
+
+  // ✅ Anchor custom error message
+  if (err?.error?.errorMessage) {
+    errorMsg = err.error.errorMessage;
+  }
+
+  // ✅ Anchor error code (fallback)
+  else if (err?.error?.errorCode?.code) {
+    errorMsg = err.error.errorCode.code;
+  }
+
+  // ✅ Logs me se extract (backup method)
+  else if (err?.logs) {
+    const log = err.logs.find((l: string) =>
+      l.includes("Error Message")
+    );
+
+    if (log) {
+      errorMsg = log.split("Error Message: ")[1];
+    }
+  }
+
+  // ✅ Normal JS error
+  else if (err?.message) {
+    errorMsg = err.message;
+  }
+
+  notifyError(errorMsg);
+}
+  //  finally {
+  //   setLoading(false);
+  //   setShowClaimModal(false);
+  // }
+};
+
+
   return (
     <>
       <Header />
@@ -172,7 +244,17 @@ function SmartContract() {
                         </div>
                         <div className="col-lg-4 col-4 text-end ps-0">
                           {userData?.nextBonus ?? 0} SOL
-                          <a href="#!" className="btn btn-primary btn-sm disabled">Claim Now</a>
+                          {/* <a href="#!" className="btn btn-primary btn-sm disabled">Claim Now</a> */}
+                         <button
+  className="btn btn-primary btn-sm"
+  data-bs-toggle="modal"
+  data-bs-target="#claimConfirm"
+  // disabled={!userData?.nextBonus || userData?.nextBonus <= 0}
+  // disabled={!canClaim()}
+>
+  Claim Now
+</button>
+
                         </div>
                       </div>
                     </div>
@@ -401,6 +483,65 @@ function SmartContract() {
           </div>
         </div>
       </div>
+
+
+{/* claim now modal */}
+
+ <div className="modal fade" id="claimConfirm" tabIndex={-1}>
+  <div className="modal-dialog modal-dialog-centered">
+    <div className="modal-content">
+
+      <span
+        className="modalWindow-close"
+        data-bs-dismiss="modal"
+        aria-label="Close"
+      ></span>
+
+      <div className="modal-body text-center">
+        <div className="sec-divider top"></div>
+        <div className="sec-divider bottom"></div>
+
+        {/* ICON */}
+        <img
+          src={`${import.meta.env.BASE_URL}img/solana-icon.png`}
+          width="80"
+        />
+
+        {/* BONUS AMOUNT */}
+        {/* <div className="badgeStyle text-center mb-2">
+          <h5>{userData?.nextBonus ?? 0} SOL</h5>
+        </div> */}
+
+        {/* TITLE */}
+        <h3>
+          Claim Your{" "}
+          <span className="text-success">
+            Matching Bonus
+          </span>
+        </h3>
+
+        {/* DESCRIPTION */}
+        <div className="fs-small mb-2">
+          Are you sure you want to claim your matching bonus now?
+        </div>
+
+        {/* BUTTON */}
+        <a
+          href="#"
+          className="btn btn-primary ms-1"
+          onClick={(e) => {
+            e.preventDefault();
+            handleClaimMatching();
+          }}
+        >
+          Confirm Claim
+          <i className="fa-regular fa-arrow-right ms-1"></i>
+        </a>
+
+      </div>
+    </div>
+  </div>
+</div>
 
     </>
   )

@@ -38,9 +38,9 @@ import App from "./App.tsx";
 
 (window as any).Buffer = Buffer;
 createRoot(document.getElementById('root')!).render(
-  // basename="/memeradar/"
+  // basename="/bullbnb-solana-design/"
   // basename={import.meta.env.BASE_URL}
-  <BrowserRouter basename="/bullbnb-solana-design/">
+  <BrowserRouter basename={import.meta.env.BASE_URL}>
     {/* <StrictMode> */}
       <App />
     {/* </StrictMode> */}
