@@ -54,18 +54,8 @@ useEffect(() => {
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>1</td>
-                  <td>425</td> 
-                  <td>652</td> 
-                  <td>20-02-2026</td>
-                </tr>
-                <tr>
-                  <td>2</td>
-                   <td>425</td> 
-                  <td>652</td> 
-                  <td>20-02-2026</td>
-                </tr>
+                             <tr><td colSpan={4}>No Data found</td></tr>
+
               </tbody>
             </table>
           </div>

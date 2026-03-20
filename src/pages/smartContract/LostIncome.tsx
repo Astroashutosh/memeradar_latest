@@ -49,28 +49,7 @@ useEffect(() => {
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>1</td>
-                  <td>111560880142</td>
-                  <td className="nowrap">0x3119...C768a<a href="#!" className="ms-2" title="Copy Address"><i
-                        className="bi bi-copy"></i></a><a href="#!" className="ms-2" title="Open Address"><i
-                        className="bi bi-box-arrow-up-right"></i></a></td>
-                  <td className="nowrap">03-02-2025 </td>
-                  <td>Gold</td>
-                  <td>0.25 SOL</td>
-                  <td>Team Sponsor Bonus</td>
-                </tr>
-                <tr>
-                  <td>2</td>
-                  <td>11156041753</td>
-                  <td className="nowrap">0x3119...C768a<a href="#!" className="ms-2" title="Copy Address"><i
-                        className="bi bi-copy"></i></a><a href="#!" className="ms-2" title="Open Address"><i
-                        className="bi bi-box-arrow-up-right"></i></a></td>
-                  <td className="nowrap">03-02-2025 </td>
-                  <td>Gold</td>
-                  <td>0.25 SOL</td>
-                  <td>Team Pool Bonus</td>
-                </tr>
+              <tr><td colSpan={7}>No Data found</td></tr>
               </tbody>
             </table>
           </div>

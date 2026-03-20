@@ -1825,3 +1825,28 @@ footer a {
   }
 
 }
+
+
+
+
+
+
+/* modal css */
+
+/* modal text fix */
+.modal-content {
+  background: #fff !important;
+  color: #000 !important;
+}
+
+/* headings */
+.modal-content h3,
+.modal-content h5,
+.modal-content p {
+  color: #000 !important;
+}
+
+/* span override */
+.modal-content span {
+  color: inherit !important;
+}

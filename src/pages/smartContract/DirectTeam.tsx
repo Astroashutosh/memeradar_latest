@@ -10,7 +10,7 @@ function DirectTeam() {
     const loadPartners = async () => {
       if (!wallet) return;
       const partners = await getDirectPartners(wallet);
-      console.log(partners);
+      console.log("all parteners data ",partners);
       setDirectPartners(partners);
     };
 

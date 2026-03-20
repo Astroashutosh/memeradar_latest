@@ -2,7 +2,7 @@ import { PublicKey, SystemProgram } from "@solana/web3.js";
 import { Buffer } from 'buffer';
 import * as anchor from '@coral-xyz/anchor';
 // import { BN } from '@coral-xyz/anchor';
-import { PROGRAM_ID, connection, globalPda, vaultPda, ZERO } from "./constants";
+import { PROGRAM_ID, connection, globalPda, vaultPda, ZERO, baseurl } from "./constants";
 import { getProgram } from "./anchor";
 import type { AnchorUserAccount } from "./types";
 
@@ -92,7 +92,7 @@ export const handleProgramEvents = async (tx: string, program: any) => {
       if (event.name === "RegisterEvent") {
 
         await fetch(
-          "https://demo.dsvinfosolutions.com/bullbnb-solana-design/report_api/api.php",
+          `${baseurl}report_api/api.php`,
           {
             method: "POST",
             headers: {
@@ -104,7 +104,7 @@ export const handleProgramEvents = async (tx: string, program: any) => {
               user: data.user.toBase58(),
               referrer: data.referrer.toBase58(),
               user_id: data.userId.toString(),
-               country: localStorage.getItem("country") || ""
+              country: localStorage.getItem("country") || ""
             })
           }
         );
@@ -116,7 +116,7 @@ export const handleProgramEvents = async (tx: string, program: any) => {
       if (event.name === "UpgradeEvent") {
 
         await fetch(
-          "https://demo.dsvinfosolutions.com/bullbnb-solana-design/report_api/api.php",
+          `${baseurl}report_api/api.php`,
           {
             method: "POST",
             headers: {
@@ -141,7 +141,7 @@ export const handleProgramEvents = async (tx: string, program: any) => {
         const type = Object.keys(data.incomeType)[0];
 
         await fetch(
-          "https://demo.dsvinfosolutions.com/bullbnb-solana-design/report_api/api.php",
+          `${baseurl}report_api/api.php`,
           {
             method: "POST",
             headers: {
@@ -305,7 +305,7 @@ export const registerUser = async (
   console.log("Register TX:", tx);
 
   await handleProgramEvents(tx, program);
-  
+
   return tx;
 
 };
@@ -465,7 +465,7 @@ export const registerUser = async (
 //         console.log("Register Event:", data);
 
 //         await fetch(
-//           "https://demo.dsvinfosolutions.com/bullbnb-solana-design/report_api/api.php",
+//           `${baseurl}report_api/api.php`,
 //           {
 //             method: "POST",
 //             headers: {
@@ -717,8 +717,8 @@ export const upgradePackage = async (wallet: string, newPackage: number) => {
 
   console.log("✅ Upgrade successful");
 
-// Save Data in db
-await handleProgramEvents(tx, program);
+  // Save Data in db
+  await handleProgramEvents(tx, program);
 
 
   return tx;
@@ -826,7 +826,7 @@ export const getUserData = async (wallet: string) => {
       currentPackage: account.currentPackage,
       partnerCount: account.partnerCount,
       totalMatrixTeam: account.totalMatrixTeam,
-      
+
 
     };
 
@@ -1355,7 +1355,7 @@ export const claimMatchingBonus = async (wallet: string) => {
 // export const getSponsorReports = async (wallet: string) => {
 //   try {
 //     const res = await fetch(
-//       "https://demo.dsvinfosolutions.com/bullbnb-solana-design/report_api/api.php",
+//       `${baseurl}report_api/api.php`,
 //       {
 //         method: "POST",
 //         headers: {
@@ -1383,7 +1383,7 @@ export const claimMatchingBonus = async (wallet: string) => {
 export const getReports = async (wallet: string, type: string) => {
   try {
     const res = await fetch(
-      "https://demo.dsvinfosolutions.com/bullbnb-solana-design/report_api/api.php",
+      `${baseurl}report_api/api.php`,
       {
         method: "POST",
         headers: {
@@ -1415,7 +1415,7 @@ export const getLevelIncome = async (
     const addon = level - 2; // 🔥 main logic
 
     const res = await fetch(
-      "https://demo.dsvinfosolutions.com/bullbnb-solana-design/report_api/api.php",
+      `${baseurl}report_api/api.php`,
       {
         method: "POST",
         headers: {
@@ -1447,7 +1447,7 @@ export const getLevelIncome = async (
 export const getPoolIncome = async (wallet: string) => {
   try {
     const res = await fetch(
-      "https://demo.dsvinfosolutions.com/bullbnb-solana-design/report_api/api.php",
+      `${baseurl}report_api/api.php`,
       {
         method: "POST",
         headers: {
@@ -1498,7 +1498,7 @@ export const getPoolIncome = async (wallet: string) => {
 export const getSponsorDetails = async (wallet: string) => {
   try {
     const res = await fetch(
-      "https://demo.dsvinfosolutions.com/bullbnb-solana-design/report_api/api.php",
+      `${baseurl}report_api/api.php`,
       {
         method: "POST",
         headers: {
@@ -1528,7 +1528,7 @@ export const getSponsorDetails = async (wallet: string) => {
 export const getPoolUsersByPackage = async (wallet: string, packageId: number) => {
   try {
     const res = await fetch(
-      "https://demo.dsvinfosolutions.com/bullbnb-solana-design/report_api/api.php",
+      `${baseurl}report_api/api.php`,
       {
         method: "POST",
         headers: {
@@ -1560,7 +1560,7 @@ export const getLevelBonusDetails = async (wallet: string, level: number) => {
     const addon = level - 2;
 
     const res = await fetch(
-      "https://demo.dsvinfosolutions.com/bullbnb-solana-design/report_api/api.php",
+      `${baseurl}report_api/api.php`,
       {
         method: "POST",
         headers: {

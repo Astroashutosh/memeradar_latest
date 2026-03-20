@@ -403,6 +403,14 @@ fieldset:disabled .btn {
   }
 }
 
+@media (max-width: 991px) {
+  .wsmenu-list li>a .wsarrow {
+    display: inline-block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+}
+
 .wsmenu>.wsmenu-list>li>a {
   text-decoration: none;
   padding: 0px 15px;
@@ -4923,4 +4931,39 @@ ul.attachments-items li img {
   line-height: 22px;
   padding: 0 8px;
   color: #fff;
+}
+
+
+
+
+
+/* mobile view dropdown  */
+
+
+/* Force show arrow in mobile */
+
+
+@media (max-width: 991px) {
+  .wsarrow {
+    display: inline-block !important;
+    width: 8px;
+    height: 8px;
+    border-right: 2px solid #000;
+    border-bottom: 2px solid #000;
+    transform: rotate(45deg);
+    margin-left: 6px;
+  }
+}
+
+/* menu link ko flex bana do */
+/* .wsmenu-list li>a  */
+.toggleMenu {
+  display: flex !important;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.wsmenu-list li.open>a .wsarrow {
+  transform: rotate(180deg);
+  transition: 0.3s;
 }

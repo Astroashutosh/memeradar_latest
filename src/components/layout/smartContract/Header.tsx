@@ -171,7 +171,7 @@ const handleMenuClick = () => {
 
                     <li className={openSubMenu === "smart" ? "open" : ""}>
 
-                      <a
+                      <a className="toggleMenu"
                         href="#"
                         onClick={(e) => {
                           e.preventDefault();
@@ -328,7 +328,7 @@ const handleMenuClick = () => {
 
                     <li className={openSubMenu === "reward" ? "open" : ""}>
 
-                      <a
+                      <a className="toggleMenu"
                         href="#"
                         onClick={(e) => {
                           e.preventDefault();

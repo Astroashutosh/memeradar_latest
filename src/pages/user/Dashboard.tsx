@@ -11,7 +11,7 @@ import { packages, getUserData, shorten,getSponsorDetails } from "../../solana/p
 import type { UserData } from "../../solana/types";
 import { copyToClipboard } from "../../utils/helpers"
 import { Link } from "react-router-dom";
-import UpgradeModal from "../../components/modal/UpgradeModal";
+// import UpgradeModal from "../../components/modal/UpgradeModal";
 import { useUpgrade } from '../../solana/context/UpgradeContext';
 declare global {
   interface Window {
@@ -306,7 +306,7 @@ useEffect(() => {
                   {/* <a href="smart-contract.html" className="upgrade_Btn main-div2 mt-1">
                     Upgrade Now
                   </a> */}
-                  <a
+                  {/* <a
   href="#"
   className="upgrade_Btn main-div2 mt-1"
   data-bs-toggle="modal"
@@ -319,7 +319,22 @@ useEffect(() => {
   }}
 >
   Upgrade Now
+</a> */}
+
+<a
+  href="#"
+  className="upgrade_Btn main-div2 mt-1"
+  onClick={(e) => {
+    e.preventDefault();
+    if (nextPackage) {
+      setSelectedPackage(nextPackage);
+    }
+  }}
+>
+  Upgrade Now
 </a>
+
+
                 </div>
                 <div className="section-head mb-1">
                   <div className="section-title">Referral Link</div>
@@ -561,7 +576,7 @@ useEffect(() => {
           </div>
         </div> */}
 
-<UpgradeModal
+{/* <UpgradeModal
   selectedPackage={selectedPackage}
   onUpgrade={() =>
     handleUpgrade(wallet, selectedPackage, () => {
@@ -570,7 +585,73 @@ useEffect(() => {
     })
   }
   upgrading={upgrading}
-/>
+/> */}
+
+{selectedPackage && (
+  <div
+    className="modal fade show"
+    style={{ display: "block" }}
+  >
+    <div
+      className="modal-dialog modal-dialog-centered"
+      onClick={(e) => e.stopPropagation()}
+    >
+      <div className="modal-content">
+
+        {/* Close */}
+        <span
+          className="modalWindow-close"
+          onClick={() => setSelectedPackage(null)}
+        ></span>
+
+        <div className="modal-body text-center">
+
+          <div className="sec-divider top"></div>
+          <div className="sec-divider bottom"></div>
+
+          <img
+            src={`${import.meta.env.BASE_URL}img/solana-icon.png`}
+            width="80"
+          />
+
+          <div className="badgeStyle text-center mb-2">
+            <h5>{selectedPackage?.price} SOL</h5>
+          </div>
+
+          <h3>
+            Package:{" "}
+            <span className="text-success">
+              {selectedPackage?.name}
+            </span>
+          </h3>
+
+          <div className="fs-small mb-2">
+            To complete your package upgrade, please continue to the payment page.
+          </div>
+
+          {/* Upgrade button */}
+          <a
+            href="#"
+            className={`btn btn-primary ms-1 ${upgrading ? "disabled" : ""}`}
+            onClick={(e) => {
+              e.preventDefault();
+              if (!upgrading) {
+                handleUpgrade(wallet, selectedPackage, () => {
+                  window.location.reload();
+                });
+              }
+            }}
+          >
+            {upgrading ? "Processing..." : "Proceed to Upgrade"}
+          </a>
+
+        </div>
+      </div>
+    </div>
+  </div>
+)}
+
+
 
       {showAlert && (
         <div className="alert-modal-window">

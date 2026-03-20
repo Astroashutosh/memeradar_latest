@@ -12,3 +12,5 @@ export const vaultPda = new PublicKey("9b7i985YNCi6vqFXDhC2c5EBXmzBiH9rbyvCyrzMV
 export const CLUSTER_URL = 'https://api.devnet.solana.com';
 export const connection = new Connection(CLUSTER_URL, "confirmed");
 export const ZERO = new PublicKey("11111111111111111111111111111111");
+
+export const baseurl = "https://demo.dsvinfosolutions.com/bullbnb-solana-design/";
