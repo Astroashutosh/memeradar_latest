@@ -826,6 +826,7 @@ export const getUserData = async (wallet: string) => {
       currentPackage: account.currentPackage,
       partnerCount: account.partnerCount,
       totalMatrixTeam: account.totalMatrixTeam,
+      
 
     };
 
@@ -1482,5 +1483,103 @@ export const getPoolIncome = async (wallet: string) => {
   } catch (err) {
     console.error("API ERROR:", err);
     return {};
+  }
+};
+
+
+
+
+
+
+
+
+
+
+export const getSponsorDetails = async (wallet: string) => {
+  try {
+    const res = await fetch(
+      "https://demo.dsvinfosolutions.com/bullbnb-solana-design/report_api/api.php",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: new URLSearchParams({
+          table: "sponsor",
+          action: "get",
+          user: wallet
+        })
+      }
+    );
+
+    return await res.json();
+
+  } catch (err) {
+    console.error(err);
+    return null;
+  }
+};
+
+
+
+
+
+
+export const getPoolUsersByPackage = async (wallet: string, packageId: number) => {
+  try {
+    const res = await fetch(
+      "https://demo.dsvinfosolutions.com/bullbnb-solana-design/report_api/api.php",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: new URLSearchParams({
+          table: "reports",
+          action: "select",
+          user: wallet,
+          type: "pool",        // ✅ only pool
+        })
+      }
+    );
+
+    const data = await res.json();
+
+    // ✅ filter by package (tier)
+    return data.filter((row: any) => Number(row.package) === packageId);
+
+  } catch (err) {
+    console.error(err);
+    return [];
+  }
+};
+
+
+export const getLevelBonusDetails = async (wallet: string, level: number) => {
+  try {
+    const addon = level - 2;
+
+    const res = await fetch(
+      "https://demo.dsvinfosolutions.com/bullbnb-solana-design/report_api/api.php",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: new URLSearchParams({
+          table: "reports",
+          action: "select",
+          user: wallet,
+          type: "level",
+          addon: addon.toString()
+        })
+      }
+    );
+
+    return await res.json();
+
+  } catch (err) {
+    console.error(err);
+    return [];
   }
 };

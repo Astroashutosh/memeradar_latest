@@ -205,7 +205,7 @@ function Register() {
 
 
   const handleRegister = async () => {
-
+console.log("Selected country:", country);
     try {
 
       let connectedWallet = wallet;
@@ -284,10 +284,14 @@ localStorage.setItem("country", country);
               <div className="mb-3 text-center">
                 <label className="text-warning">Select Country</label>
                 {/* <select className="form-control" > */}
-               <select
+      <select
   className="form-control"
   value={country}
-  onChange={(e) => setCountry(e.target.value)}
+  onChange={(e) => {
+    const selected = e.target.value;
+    setCountry(selected);
+    localStorage.setItem("country", selected); 
+  }}
 >
   <option value="">Select Country</option>
 

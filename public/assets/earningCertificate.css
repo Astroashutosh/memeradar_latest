@@ -1,0 +1,56 @@
+
+       body {
+      margin: 0;
+      padding: 0;
+      font-family: "Be Vietnam Pro", sans-serif;
+      font-weight: 600;
+    }
+
+    .rank-certificate-wrapper {
+      width: 900px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    .rank-name {
+      position: absolute;
+      top: 610px;
+      font-size: 48px;
+      font-weight: 600;
+      color: #1b9c40;
+      width: 100%;
+      text-align: center;
+    }
+
+    .rank-achieved-text {
+      position: absolute;
+      bottom: 372px;
+      left: 176px;
+      font-weight: bold;
+      font-size: 22px;
+      text-align: center;
+      color: #1b9c40;
+      width: 214px;
+      text-transform: uppercase;
+    }
+
+    .earning-text {
+      position: absolute;
+      bottom: 372px;
+      right: 173px;
+      font-weight: bold;
+      font-size: 22px;
+      text-align: center;
+      color: #1b9c40;
+      width: 214px;
+      text-transform: uppercase;
+    }
+
+    .rank-achieved-date {
+      position: absolute;
+      bottom: 182px;
+      width: 100%;
+      text-align: center;
+      font-size: 14px;
+      opacity: 0.7;
+    }

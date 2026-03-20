@@ -4,6 +4,8 @@ import Dashboard from './pages/user/Dashboard'
 import { WalletProvider } from "./solana/context/WalletContext";
 import { Notifications } from "./solana/context/Notifications";
 import ProtectedRoute from './solana/context/ProtectedRoute';
+import { UpgradeProvider } from "./solana/context/UpgradeContext";
+
 import Login from './pages/Login'
 import Register from './pages/Register'
 import MainLayout from './components/layout/MainLayout'
@@ -29,22 +31,48 @@ import FiveDollar from './pages/user/FiveDollar'
 import MemeKols from './pages/user/MemeKols'
 import Support from './pages/user/Support'
 import Profile from './pages/user/Profile'
-// import RewardBoard from './pages/user/reward/RewardBoard'
+import RewardBoard from './pages/user/reward/RewardBoard';
+import MPLostDetails from './pages/smartContract/MPLostDetails';
+import LostIncome from './pages/smartContract/LostIncome';
+import EarningCertificate from './pages/smartContract/EarningCertificate';
+import  Certificate from './pages/user/Certificate';
+import CertificateDownload from './pages/user/CertificateDownload';
+import Loader from './utils/Loader';
+import { useEffect, useState } from 'react';
+import MatrixTreeDetails from './pages/smartContract/MatrixTreeDetails';
+import LevelbonusDetails from './pages/smartContract/LevelbonusDetails';
+
 
 
 function App() {
+const [appReady, setAppReady] = useState(false);
 
+useEffect(() => {
+  const timer = setTimeout(() => {
+    setAppReady(true);
+  }, 300);
 
+  return () => clearTimeout(timer);
+}, []);
+
+if (!appReady) return <Loader />;
   return (
     <>
       <WalletProvider>
+    <UpgradeProvider>
+
       <Notifications />
         <Routes>
           <Route element={<AuthLayout />}>
             <Route path="/" element={<Login />} />
             <Route path="/:ref" element={<Register />} />
             <Route path="/register" element={<Register />} />
+            
           </Route>
+            <Route path="/earningCertificate" element={<EarningCertificate />} />
+            <Route path="/certificateDownload" element={<CertificateDownload />} />
+            <Route path="/loader" element={<Loader />} />
+
           
               <Route
           path="/dashboard"
@@ -79,10 +107,17 @@ function App() {
             <Route path="/memeKols" element={<MemeKols />} />
             <Route path="/support" element={<Support />} />
             <Route path="/profile" element={<Profile />} />
-            {/* <Route path="/rewardboard" element={<RewardBoard />} /> */}
+            <Route path="/rewardboard" element={<RewardBoard />} />
+            <Route path="/mpLostDetails" element={<MPLostDetails />} />
+            <Route path="/lostIncome" element={<LostIncome />} />
+            <Route path="/certificate" element={<Certificate />} />
+            <Route path="/matrixTreeDetails/:tier" element={<MatrixTreeDetails />} />
+            <Route path="/levelbonusDetails/:level" element={<LevelbonusDetails />} />
             
           </Route>
         </Routes>
+      </UpgradeProvider>
+
       </WalletProvider>
     </>
   )

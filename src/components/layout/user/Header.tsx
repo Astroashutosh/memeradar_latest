@@ -102,7 +102,8 @@ import logo from "/assets/images/logo.png";
 import { Link, useNavigate } from "react-router-dom";
 import { useWallet } from "../../../solana/context/WalletContext";
 import { shorten } from "../../../solana/program";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+
 
 function Header() {
 
@@ -111,9 +112,13 @@ function Header() {
 
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const toggleMenu = () => {
-    setMenuOpen(!menuOpen);
-  };
+  // const toggleMenu = () => {
+  //   setMenuOpen(!menuOpen);
+  // };
+
+const toggleMenu = () => {
+  setMenuOpen(prev => !prev);
+};
 
   const handleDisconnect = async () => {
     await disconnect();
@@ -121,8 +126,31 @@ function Header() {
     navigate("/", { replace: true });
   };
 
+useEffect(() => {
+  if (menuOpen) {
+    document.body.classList.add("wsactive");
+  } else {
+    document.body.classList.remove("wsactive");
+  }
+}, [menuOpen]);
+
+// const handleMenuClick = () => {
+//   setMenuOpen(false);
+
+// };
+
   return (
     <>
+
+
+{menuOpen && (
+  <div
+    className="overlapblackbg"
+    onClick={() => setMenuOpen(false)}
+  ></div>
+)}
+
+
       {/* MOBILE HEADER */}
       <div className="wsmobileheader">
         <a

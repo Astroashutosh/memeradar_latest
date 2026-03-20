@@ -7,18 +7,31 @@ import usePageCSS from "../../hooks/usePageCSS";
 import ReadyToPump from "../../components/dashboard/ReadyToPump";
 import TrendingToken from "../../components/dashboard/TrendingToken";
 import { useWallet } from "../../solana/context/WalletContext";
-import { packages, getUserData, shorten } from "../../solana/program";
+import { packages, getUserData, shorten,getSponsorDetails } from "../../solana/program";
 import type { UserData } from "../../solana/types";
 import { copyToClipboard } from "../../utils/helpers"
-
+import { Link } from "react-router-dom";
+import UpgradeModal from "../../components/modal/UpgradeModal";
+import { useUpgrade } from '../../solana/context/UpgradeContext';
+declare global {
+  interface Window {
+    confetti: any;
+  }
+}
 function Dashboard() {
   usePageCSS("assets/home.css");
   usePageCSS("assets/dex.css");
-
+// const [sponsorData, setSponsorData] = useState(null);
+const [sponsorData, setSponsorData] = useState<{
+  sponsor?: string;
+  sponsor_id?: string;
+} | null>(null);
+  const { handleUpgrade, upgrading } = useUpgrade();
   const [showModal, setShowModal] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
   const { wallet, walletReady } = useWallet();
   const [userData, setUserData] = useState<UserData | null>(null);
+  const [selectedPackage, setSelectedPackage] = useState<any>(null);
   useEffect(() => {
     const loadUser = async () => {
       if (!wallet || !walletReady) return;
@@ -44,6 +57,9 @@ function Dashboard() {
     const btn = document.getElementById("x-connect-btn");
     const modal = document.getElementById("x-connect-window");
     const closeBtns = document.querySelectorAll(".closeBTN, .modalWindow-close");
+
+
+
 
     const openModal = () => {
       if (modal) modal.style.display = "block";
@@ -108,6 +124,97 @@ function Dashboard() {
     typeof window !== "undefined" ? window.location.origin : "";
   const referralLink = wallet ? `${baseUrl}/${shorten(wallet)}` : "";
   const referralLinkCopy = wallet ? `${baseUrl}/${wallet}` : "";
+
+
+useEffect(() => {
+  const loadSponsor = async () => {
+    if (!wallet) return;
+
+    const res = await getSponsorDetails(wallet);
+
+    if (res?.status) {
+      setSponsorData(res);
+    }
+  };
+
+  loadSponsor();
+}, [wallet]);
+
+
+
+
+
+
+
+
+
+// new code of celebration
+
+useEffect(() => {
+
+  // const loadConfetti = () => {
+  const loadConfetti = (): Promise<any> => {
+    return new Promise((resolve, reject) => {
+      if (window.confetti) return resolve(window.confetti);
+
+      const script = document.createElement("script");
+      script.src =
+        "https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js";
+      script.onload = () => resolve(window.confetti);
+      script.onerror = () => reject();
+      document.body.appendChild(script);
+    });
+  };
+
+  const celebration = (volume = 0.11) => {
+    if (!window.confetti) return;
+
+    const burst = () => {
+      window.confetti({
+        particleCount: 50,
+        angle: 60,
+        spread: 90,
+        origin: { x: 0 },
+      });
+
+      window.confetti({
+        particleCount: 50,
+        angle: 120,
+        spread: 90,
+        origin: { x: 1 },
+      });
+    };
+
+    // const appcheer = document.getElementById("appcheer");
+    const appcheer = document.getElementById("appcheer") as HTMLAudioElement | null;
+    if (appcheer) {
+      appcheer.volume = volume;
+      appcheer.play().catch(() => {});
+    }
+
+    setTimeout(burst, 100);
+    setTimeout(burst, 200);
+    setTimeout(burst, 400);
+    setTimeout(burst, 500);
+    setTimeout(burst, 700);
+  };
+
+  loadConfetti().then(() => {
+    celebration(); // ✅ page load
+
+    const btn = document.getElementById("celebrateAction");
+
+    if (btn) {
+      btn.addEventListener("click", () => celebration(0.75));
+    }
+  });
+
+}, []);
+
+
+
+
+
 
   return (
     <>
@@ -175,16 +282,14 @@ function Dashboard() {
                     <div className="col-sm-7 col-7 text-start">
                       <small> Current Rank</small>
                       {/* <h4> {userPackage?.name ?? "No Rank"}</h4> */}
-                      <h4>
-                        {userData?.rank && userData.rank !== "None"
-                          ? userData.rank
-                          : "No Rank"}
-                      </h4>
+                     <h4>
+  {packages.find(p => p.id === userData?.currentPackage)?.name || "DBO"}
+</h4>
                     </div>
                     <div className="col-sm-5 col-5 text-end">
-                      <a href="certificate.html" className="btn btn-primary btn-sm bg-gradient-golden">
+                      <Link to="/certificate" className="btn btn-primary btn-sm bg-gradient-golden">
                         <i className="fa-regular fa-download me-1"></i>Certificate
-                      </a>
+                      </Link>
                     </div>
                   </div>
 
@@ -198,9 +303,23 @@ function Dashboard() {
                       <div className="col-sm-6  col-6 skstyle"> {nextPackage ? nextPackage.name : "Max Rank Achieved"} </div>
                     </div>
                   </div>
-                  <a href="smart-contract.html" className="upgrade_Btn main-div2 mt-1">
+                  {/* <a href="smart-contract.html" className="upgrade_Btn main-div2 mt-1">
                     Upgrade Now
-                  </a>
+                  </a> */}
+                  <a
+  href="#"
+  className="upgrade_Btn main-div2 mt-1"
+  data-bs-toggle="modal"
+  data-bs-target="#paymentConfirm"
+  onClick={(e) => {
+    e.preventDefault();
+    if (nextPackage) {
+      setSelectedPackage(nextPackage);
+    }
+  }}
+>
+  Upgrade Now
+</a>
                 </div>
                 <div className="section-head mb-1">
                   <div className="section-title">Referral Link</div>
@@ -256,6 +375,24 @@ function Dashboard() {
                   <span className="text-success"> <span className="text-decoration-line-through text-white"><i
                     className="fa-regular fa-usd me-1"></i>5.00</span> Free </span>
                 </div>
+
+<div className="section-head mb-1">
+  <div className="section-title">Sponsor</div>
+</div>
+
+<div className="item-style-box d-flex justify-content-between align-items-center mb-0">
+  <span>
+    {sponsorData?.sponsor
+      ? shorten(sponsorData.sponsor)
+      : "Not Assigned"}
+  </span>
+
+  <span className="text-success">
+    {sponsorData?.sponsor_id ?? "-"}
+  </span>
+</div>
+
+
               </div>
               <div className="newstyle-wrapper mb-3">
                 <div className="row mb-2">
@@ -424,7 +561,16 @@ function Dashboard() {
           </div>
         </div> */}
 
-
+<UpgradeModal
+  selectedPackage={selectedPackage}
+  onUpgrade={() =>
+    handleUpgrade(wallet, selectedPackage, () => {
+      // 🔥 optional refresh
+      window.location.reload();
+    })
+  }
+  upgrading={upgrading}
+/>
 
       {showAlert && (
         <div className="alert-modal-window">

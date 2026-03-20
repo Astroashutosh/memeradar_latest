@@ -1,0 +1,68 @@
+ body {
+      margin: 0;
+      padding: 0;
+      font-family: "Be Vietnam Pro", sans-serif;
+      font-weight: 600;
+    }
+
+    .rank-certificate-wrapper {
+      width: 1000px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+
+    .rank-name {
+      position: absolute;
+      top: 322px;
+      text-align: center;
+      font-size: 48px;
+      font-weight: 600;
+       color: #000;
+      width: 100%;
+    }
+
+    .rank-achieved-text {
+      position: absolute;
+      top: 437px;
+      font-weight: bold;
+      font-size: 28px;
+      width: 100%;
+      text-align: center;
+      color: #ffe400;
+      text-transform: uppercase;
+    }
+
+    .rank-achieved-icon {
+      position: absolute;
+      top: 375px;
+      right: 155px;
+    }
+
+    .rank-achieved-date {
+      position: absolute;
+      bottom: 108px;
+      width: 100%;
+      text-align: center;
+      opacity: 0.9;
+    }
+
+
+/* 
+@media print {
+  body * {
+    visibility: hidden;
+  }
+
+  .rank-certificate-wrapper,
+  .rank-certificate-wrapper * {
+    visibility: visible;
+  }
+
+  .rank-certificate-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+  }
+} */

@@ -4,15 +4,17 @@ import $ from "jquery";
 import "datatables.net-bs5";
 import "datatables.net-bs5/css/dataTables.bootstrap5.min.css";
 import { useWallet } from "../../solana/context/WalletContext";
-import { checkUserRegistered, upgradePackage, getUserData,getReports } from "../../solana/program";
-import { notifySuccess, notifyError } from "../../solana/context/Notifications";
+import {  getUserData,getReports } from "../../solana/program";
+// import { notifySuccess, notifyError } from "../../solana/context/Notifications";
 import UpgradeModal from "../../components/modal/UpgradeModal";
+import { useUpgrade } from '../../solana/context/UpgradeContext';
 
 function MatchingBonus() {
   const { wallet } = useWallet();
   // const [loading, setLoading] = useState(true);
   const [selectedPackage, setSelectedPackage] = useState<any>(null);
   const [userData, setUserData] = useState<any>(null);
+    const { handleUpgrade, upgrading } = useUpgrade();
   // const [rows, setRows] = useState<any[]>([]);
   const handleOpenUpgrade = (pkg: any) => {
     setSelectedPackage(pkg);
@@ -134,28 +136,31 @@ useEffect(() => {
 
 
 
-  const handleUpgrade = async () => {
-    if (!wallet) return;
-    if (!selectedPackage) {
-      notifyError("Select package first");
-      return;
-    }
+  // const handleUpgrade = async () => {
+  //   if (!wallet) return;
+  //   if (!selectedPackage) {
+  //     notifyError("Select package first");
+  //     return;
+  //   }
 
-    try {
-      const registered = await checkUserRegistered(wallet);
-      console.log("registered", registered);
-      if (registered) {
-        await upgradePackage(wallet, selectedPackage.id);
-        notifySuccess("Package upgraded successfully");
-      }
+  //   try {
+  //     const registered = await checkUserRegistered(wallet);
+  //     console.log("registered", registered);
+  //     if (registered) {
+  //       await upgradePackage(wallet, selectedPackage.id);
+  //       notifySuccess("Package upgraded successfully");
+  //     }
 
-    } catch (err: any) {
-      console.error(err);
-      notifyError(err.message || "Upgrade failed");
-    }
+  //   } catch (err: any) {
+  //     console.error(err);
+  //     notifyError(err.message || "Upgrade failed");
+  //   }
 
-  };
+  // };
 
+
+
+  
   return (
     <>
       <main>
@@ -199,11 +204,20 @@ useEffect(() => {
           </div>
         </div>
       </main>
-      <UpgradeModal
+      {/* <UpgradeModal
         selectedPackage={selectedPackage}
         onUpgrade={handleUpgrade}
-      />
-
+      /> */}
+<UpgradeModal
+  selectedPackage={selectedPackage}
+  onUpgrade={() =>
+    handleUpgrade(wallet, selectedPackage, () => {
+      // 🔥 optional refresh
+      window.location.reload();
+    })
+  }
+  upgrading={upgrading}
+/>
       {/* Modal */}
       <div className="modal fade bd-example-modal-lg" id="paydetails" tabIndex={-1}>
         <div className="modal-dialog modal-dialog-centered modal-lg">

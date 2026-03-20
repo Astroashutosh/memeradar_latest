@@ -1,9 +1,10 @@
 interface UpgradeModalProps {
   selectedPackage: any;
   onUpgrade: () => void;
+  upgrading: boolean;
 }
 
-function UpgradeModal({ selectedPackage, onUpgrade }: UpgradeModalProps) {
+function UpgradeModal({ selectedPackage, onUpgrade,upgrading  }: UpgradeModalProps) {
   return (
     <div className="modal fade" id="paymentConfirm" tabIndex={-1}>
       <div className="modal-dialog modal-dialog-centered">
@@ -36,7 +37,7 @@ function UpgradeModal({ selectedPackage, onUpgrade }: UpgradeModalProps) {
               page.
             </div>
 
-            <a
+            {/* <a
               href="#"
               className="btn btn-primary ms-1"
               onClick={(e) => {
@@ -46,7 +47,20 @@ function UpgradeModal({ selectedPackage, onUpgrade }: UpgradeModalProps) {
             >
               Proceed to Upgrade
               <i className="fa-regular fa-arrow-right ms-1"></i>
-            </a>
+            </a> */}
+
+<a
+  href="#"
+  className={`btn btn-primary ms-1 ${upgrading ? "disabled" : ""}`}
+  onClick={(e) => {
+    e.preventDefault();
+    if (!upgrading) onUpgrade();
+  }}
+>
+  {upgrading ? "Processing..." : "Proceed to Upgrade"}
+  {!upgrading && <i className="fa-regular fa-arrow-right ms-1"></i>}
+</a>
+
           </div>
         </div>
       </div>

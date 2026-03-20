@@ -3,6 +3,7 @@ import loading from '/img/green-loading.gif';
 import CheckIcon from '/img/check-icon.png';
 import { useWallet } from "../../solana/context/WalletContext";
 import {getUserData, packages } from "../../solana/program";
+import { Link } from 'react-router-dom';
 function MatrixTree() {
   const { wallet } = useWallet();
   const [levelCounts, setLevelCounts] = useState<number[]>([]);
@@ -103,7 +104,13 @@ if (userCount === 0) {
                     <td width="13%">{loadingLevels ? <img src={loading} width="20" /> : statusIcon}</td>
                     <td>
                       {userCount > 0 ? (
-                        <a href="matrix-tree-details.html" className="btn btn-primary btn-sm">View</a>
+                        // <Link to="/matrixTreeDetails" className="btn btn-primary btn-sm">View</Link>
+                        <Link 
+  to={`/matrixTreeDetails/${pkg.id}`} 
+  className="btn btn-primary btn-sm"
+>
+  View
+</Link>
                       ) : (
                         "-"
                       )}

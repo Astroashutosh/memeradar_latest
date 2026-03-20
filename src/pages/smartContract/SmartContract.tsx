@@ -3,17 +3,22 @@ import Header from '../../components/layout/smartContract/Header'
 import Sidebar from '../../components/layout/smartContract/Sidebar'
 import JoiningSlider from '../../components/dashboard/JoiningSlider'
 import { useWallet } from "../../solana/context/WalletContext";
+import { useUpgrade } from '../../solana/context/UpgradeContext';
 
 import { useLegacyCountdown } from "../../utils/helpers";
 import { notifySuccess, notifyError } from "../../solana/context/Notifications";
-import { checkUserRegistered, packages, upgradePackage, getUserData,claimMatchingBonus } from "../../solana/program";
+import {  packages, getUserData,claimMatchingBonus } from "../../solana/program";
 import UpgradeModal from "../../components/modal/UpgradeModal";
+import { Link } from 'react-router-dom';
 function SmartContract() {
   const { wallet } = useWallet();
   const [selectedPackage, setSelectedPackage] = useState<any>(null);
   const [userData, setUserData] = useState<any>(null);
   const [userPackage, setUserPackage] = useState<number>(0);
   const { countdown, countdown1 } = useLegacyCountdown();
+  // const [upgrading, setUpgrading] = useState(false);
+
+const { handleUpgrade, upgrading } = useUpgrade();
 // const [showClaimModal, setShowClaimModal] = useState(false);
 // const [loading, setLoading] = useState(false);
   const handleSelectPackage = (pkg: any) => {
@@ -42,29 +47,79 @@ function SmartContract() {
   const handleOpenUpgrade = (pkg: any) => {
     setSelectedPackage(pkg);
   };
-  const handleUpgrade = async () => {
+  // const handleUpgrade = async () => {
 
-    if (!wallet) return;
-    if (!selectedPackage) {
-      notifyError("Select package first");
-      return;
-    }
+  //   if (!wallet) return;
+  //   if (!selectedPackage) {
+  //     notifyError("Select package first");
+  //     return;
+  //   }
 
-    try {
-      const registered = await checkUserRegistered(wallet);
-      console.log("registered", registered);
-      if (registered) {
-        await upgradePackage(wallet, selectedPackage.id);
-        notifySuccess("Package upgraded successfully");
-        setUserPackage(selectedPackage.id);
-      }
+  //   try {
+  //     const registered = await checkUserRegistered(wallet);
+  //     console.log("registered", registered);
+  //     if (registered) {
+  //       await upgradePackage(wallet, selectedPackage.id);
+  //       notifySuccess("Package upgraded successfully");
+  //       setUserPackage(selectedPackage.id);
+  //     }
 
-    } catch (err: any) {
-      console.error(err);
-      notifyError(err.message || "Upgrade failed");
-    }
+  //   } catch (err: any) {
+  //     console.error(err);
+  //     notifyError(err.message || "Upgrade failed");
+  //   }
 
-  };
+  // };
+
+// const handleUpgrade = async () => {
+//   if (!wallet) return;
+//   if (!selectedPackage) {
+//     notifyError("Select package first");
+//     return;
+//   }
+
+//   try {
+//     setUpgrading(true); // 🔥 start loader
+
+//     const registered = await checkUserRegistered(wallet);
+
+//     if (registered) {
+//       await upgradePackage(wallet, selectedPackage.id);
+
+//       setUserPackage(selectedPackage.id);
+
+//       // 🔥 modal close (Bootstrap)
+//       const modal = document.getElementById("paymentConfirm");
+//       if (modal) {
+//         const modalEl = document.getElementById("paymentConfirm");
+
+// if (modalEl) {
+//   let modalInstance = window.bootstrap?.Modal.getInstance(modalEl);
+
+//   if (!modalInstance) {
+//     modalInstance = new window.bootstrap.Modal(modalEl);
+//   }
+
+//   modalInstance.hide();
+// }
+//       }
+
+//       notifySuccess("Package upgraded successfully"); // ✅ success message
+      
+// setTimeout(() => {
+//   window.location.reload();
+// }, 1500);
+//     }
+
+//   } catch (err: any) {
+//     notifyError(err.message || "Upgrade failed");
+//   } finally {
+//     setUpgrading(false); // 🔥 stop loader
+//   }
+// };
+
+
+
 
 // claim now
 // const canClaim = () => {
@@ -185,41 +240,41 @@ const handleClaimMatching = async () => {
             <div className="col-lg-12 col-xl-6 order-md-3 order-xl-2 ">
               <div className="row">
                 <div className="col-md-6 col-lg-6 mb-3">
-                  <a href="sponsor-bonus.html" className="stats-box">
+                  <Link to="/sponsorBonus" className="stats-box">
                     <div className="stats-icon">
                       <img src={`${import.meta.env.BASE_URL}img/solana-icon.png`} />
                     </div>
                     <h2 className="title">Team Sponsor Bonus</h2>
                     <h3><span className="partnerSponsorBonus">{userData?.sponsorIncome ?? 0} </span> SOL</h3>
-                  </a>
+                  </Link>
                 </div>
                 <div className="col-md-6 col-lg-6 mb-3">
-                  <a href="direct-bonus.html" className="stats-box">
+                  <Link to="/directBonus" className="stats-box">
                     <div className="stats-icon">
                       <img src={`${import.meta.env.BASE_URL}img/solana-icon.png`} />
                     </div>
                     <h2 className="title">Team Starter Bonus</h2>
                     <h3><span className="partnerSponsorBonus">{userData?.directIncome ?? 0} </span> SOL</h3>
-                  </a>
+                  </Link>
                 </div>
                 <div className="col-md-6 col-lg-6 mb-3">
-                  <a href="pool-bonus.html" className="stats-box">
+                  <Link to="/poolBonus" className="stats-box">
                     <div className="stats-icon">
                       <img src={`${import.meta.env.BASE_URL}img/solana-icon.png`} />
                     </div>
                     <h2 className="title">Team Pool Bonus</h2>
                     <h3><span className="partnerSponsorBonus">{userData?.poolIncome ?? 0} </span> SOL</h3>
-                  </a>
+                  </Link>
                 </div>
 
                 <div className="col-md-6 col-lg-6 mb-3">
-                  <a href="level-bonus.html" className="stats-box">
+                  <Link to="/levelBonus" className="stats-box">
                     <div className="stats-icon">
                       <img src={`${import.meta.env.BASE_URL}img/solana-icon.png`} />
                     </div>
                     <h2 className="title">Team Level Bonus</h2>
                     <h3><span className="partnerSponsorBonus">{userData?.levelIncome ?? 0} </span> SOL</h3>
-                  </a>
+                  </Link>
                 </div>
 
                 <div className="col-md-6 col-lg-6 mb-3">
@@ -228,9 +283,9 @@ const handleClaimMatching = async () => {
                       <img src={`${import.meta.env.BASE_URL}img/solana-icon.png`} />
                     </div>
                     <h2 className="title">Team Matching Bonus</h2>
-                    <a href="team-matching-bonus.html">
+                    <Link to="/matchingBonus">
                       <h3><span className="partnerSponsorBonus">{userData?.matchingIncome ?? 0} </span> SOL</h3>
-                    </a>
+                    </Link>
 
                     <div className="item-style-box mt-2 bg-gradient-golden">
                       <div className="row align-items-center justify-content-center">
@@ -244,7 +299,7 @@ const handleClaimMatching = async () => {
                         </div>
                         <div className="col-lg-4 col-4 text-end ps-0">
                           {userData?.nextBonus ?? 0} SOL
-                          {/* <a href="#!" className="btn btn-primary btn-sm disabled">Claim Now</a> */}
+                          {/* <Link to="#!" className="btn btn-primary btn-sm disabled">Claim Now</Link> */}
                          <button
   className="btn btn-primary btn-sm"
   data-bs-toggle="modal"
@@ -268,9 +323,9 @@ const handleClaimMatching = async () => {
                       <img src={`${import.meta.env.BASE_URL}img/solana-icon.png`} />
                     </div>
                     <h2 className="title">Global Silver Bonus</h2>
-                    <a href="team-matching-bonus.html">
+                    <Link to="/globalPoolBonus">
                       <h3><span className="partnerSponsorBonus">{userData?.silverBonus ?? 0} </span> SOL</h3>
-                    </a>
+                    </Link>
 
                     <div className="item-style-box mt-2 bg-gradient-golden">
                       <div className="row align-items-center justify-content-center">
@@ -283,7 +338,7 @@ const handleClaimMatching = async () => {
                           </div>
                         </div>
                         <div className="col-lg-4 col-4 text-end ps-0">
-                          <a href="#!" className="btn btn-primary btn-sm ">Claim Now</a>
+                          <Link to="#!" className="btn btn-primary btn-sm ">Claim Now</Link>
                         </div>
                       </div>
                     </div>
@@ -295,31 +350,31 @@ const handleClaimMatching = async () => {
 
 
                 <div className="col-md-6 col-lg-3  col-6 mb-3">
-                  <a href="network-team.html" className="stats-box">
+                  <Link to="/networkTeam" className="stats-box">
 
                     <h2 className="title">Network Team</h2>
                     <h3><span className="partnerSponsorBonus">{userData?.totalMatrixTeam ?? 0}</span></h3>
-                  </a>
+                  </Link>
                 </div>
                 <div className="col-md-6 col-lg-3  col-6 mb-3">
-                  <a href="direct-team.html" className="stats-box">
+                  <Link to="/directTeam" className="stats-box">
 
                     <h2 className="title">Direct Team</h2>
                     <h3><span className="partnerSponsorBonus">{userData?.partnerCount ?? 0}</span></h3>
-                  </a>
+                  </Link>
                 </div>
                 <div className="col-md-6 col-lg-6 mb-3">
-                  <a href="rewardboard.html" className="stats-box">
+                  <Link to="/rewardboard" className="stats-box">
                     <div className="stats-icon">
                       <img src={`${import.meta.env.BASE_URL}img/xp-point.png`} />
                     </div>
                     <h2 className="title">Total XP Points</h2>
                     <h3><span className="partnerSponsorBonus">{userData?.xpPoints ?? 0}</span></h3>
-                  </a>
+                  </Link>
                 </div>
 
                 <div className="col-md-6 col-lg-6 mb-3">
-                  <a href="lost-income.html">
+                  <Link to="/lostIncome">
                     <div className="stats-box bg-gradient-violet" style={{ lineHeight: "0.3" }}>
                       <div className="stats-icon">
                         <img src={`${import.meta.env.BASE_URL}img/solana-icon.png`} />
@@ -331,10 +386,10 @@ const handleClaimMatching = async () => {
                       <h3 className="totallapsIncome">{userData?.lapsIncome ?? 0} SOL</h3>
                       <div style={{ fontSize: "10px", marginTop: "5px" }}>Take action now to keep your bonus!</div>
                     </div>
-                  </a>
+                  </Link>
                 </div>
                 <div className="col-md-6 col-lg-6 mb-3">
-                  <a href="MP-lost-details.html">
+                  <Link to="/mpLostDetails">
                     <div className="stats-box bg-gradient-green" style={{ lineHeight: "0.3" }}>
                       <div className="row">
                         <div className="col-lg-6 col-6">
@@ -350,7 +405,7 @@ const handleClaimMatching = async () => {
                       </div>
                       <div style={{ fontSize: "10px", marginTop: "5px" }}>Take action now to keep your Matching Bonus!</div>
                     </div>
-                  </a>
+                  </Link>
                 </div>
 
 
@@ -395,9 +450,9 @@ const handleClaimMatching = async () => {
 
                         </tbody>
                       </table>
-                      <a href="earning-certificate-download.html" target="_blank" className="btn btn-primary btn-sm rounded">
+                      <Link to="/earningCertificate" target="_blank" className="btn btn-primary btn-sm rounded">
                         <i className="fa-regular fa-download me-1"></i>Download Certificate
-                      </a>
+                      </Link>
                     </div>
                   </div>
                 </div>
@@ -447,27 +502,37 @@ const handleClaimMatching = async () => {
 
           <div className="row">
             <div className="col-sm-12 col-lg-3 col-xl-3 mt-3 mt-lg-0">
-              <a href="zoom-meeting.html" className="meeting-box">
+              <Link to="zoom-meeting.html" className="meeting-box">
                 <div className="meetingContent">
                   <img src={`${import.meta.env.BASE_URL}img/zoom-meet-logo.png`} /> <br />
                   <span className="btn btn-warning btn-sm mt-2"><i className="fa-regular fa-eye me-1"></i>Upcoming Meetings </span>
                 </div>
-              </a>
+              </Link>
             </div>
 
             <div className="col-sm-12 col-lg-9 col-xl-9 text-center mt-3 mt-lg-0">
-              <a href="lucky-draw.html"> <img src={`${import.meta.env.BASE_URL}img/lucky-draw-status.gif`} className="rounded" /></a>
+              <Link to="lucky-draw.html"> <img src={`${import.meta.env.BASE_URL}img/lucky-draw-status.gif`} className="rounded" /></Link>
             </div>
 
           </div>
         </div >
 
       </main >
-      <UpgradeModal
+      {/* <UpgradeModal
         selectedPackage={selectedPackage}
         onUpgrade={handleUpgrade}
-      />
+         upgrading={upgrading} 
+      /> */}
 
+<UpgradeModal
+  selectedPackage={selectedPackage}
+  onUpgrade={() =>
+    handleUpgrade(wallet, selectedPackage, () => {
+      window.location.reload();
+    })
+  }
+  upgrading={upgrading}
+/>
 
       {/* <!--  Recovery Phrase--> */}
       <div className="modal fade" id="RecoveryPhrase" tabIndex={-1}>
@@ -526,8 +591,8 @@ const handleClaimMatching = async () => {
         </div>
 
         {/* BUTTON */}
-        <a
-          href="#"
+        <Link
+          to="#"
           className="btn btn-primary ms-1"
           onClick={(e) => {
             e.preventDefault();
@@ -536,7 +601,7 @@ const handleClaimMatching = async () => {
         >
           Confirm Claim
           <i className="fa-regular fa-arrow-right ms-1"></i>
-        </a>
+        </Link>
 
       </div>
     </div>

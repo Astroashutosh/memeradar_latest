@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import logo from "/assets/images/logo.png";
 import { useWallet } from "../../../solana/context/WalletContext";
 import { shorten } from "../../../solana/program";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 function Header() {
 
@@ -22,10 +22,12 @@ function Header() {
 
 const [openSubMenu, setOpenSubMenu] = useState<string | null>(null);
 
+// const toggleMenu = () => {
+//   setMenuOpen(!menuOpen);
+// };
 const toggleMenu = () => {
-  setMenuOpen(!menuOpen);
+  setMenuOpen(prev => !prev);
 };
-
 const toggleSubMenu = (menu: string) => {
   setOpenSubMenu(openSubMenu === menu ? null : menu);
 };
@@ -36,8 +38,29 @@ const toggleSubMenu = (menu: string) => {
     navigate("/", { replace: true });
   };
 
+useEffect(() => {
+  if (menuOpen) {
+    document.body.classList.add("wsactive");
+  } else {
+    document.body.classList.remove("wsactive");
+  }
+}, [menuOpen]);
+
+const handleMenuClick = () => {
+  setMenuOpen(false);
+  setOpenSubMenu(null);
+};
   return (
     <>
+
+{menuOpen && (
+  <div
+    className="overlapblackbg"
+    onClick={() => setMenuOpen(false)}
+  ></div>
+)}
+
+
       {/* MOBILE HEADER */}
       <div className="wsmobileheader">
         <a
@@ -130,18 +153,18 @@ const toggleSubMenu = (menu: string) => {
                   <ul className="wsmenu-list">
 
                     <li>
-                      <Link to="/dashboard">
+                      <Link to="/dashboard" onClick={handleMenuClick}>
                         <i className="fa-regular fa-home"></i>
                         <span className="ms-1 d-inline d-lg-none">Home</span>
                       </Link>
                     </li>
 
                     <li>
-                      <Link to="/smartContract">Dashboard</Link>
+                      <Link to="/smartContract" onClick={handleMenuClick}>Dashboard</Link>
                     </li>
 
                     <li>
-                      <Link to="/profile">My Profile</Link>
+                      <Link to="/profile" onClick={handleMenuClick}>My Profile</Link>
                     </li>
 
                     {/* SMART CONTRACT MEGA MENU */}
@@ -177,25 +200,25 @@ const toggleSubMenu = (menu: string) => {
                                 </li>
 
                                 <li>
-                                  <Link to="/directTeam">
+                                  <Link onClick={handleMenuClick} to="/directTeam" >
                                     My Direct Team
                                   </Link>
                                 </li>
 
                                 <li>
-                                  <Link to="/networkTeam">
+                                  <Link onClick={handleMenuClick} to="/networkTeam">
                                     My Network Team
                                   </Link>
                                 </li>
 
                                 <li>
-                                  <Link to="/teamTree">
+                                  <Link onClick={handleMenuClick} to="/teamTree">
                                     My Team Tree
                                   </Link>
                                 </li>
 
                                 <li>
-                                  <Link to="/matrixTree">
+                                  <Link onClick={handleMenuClick} to="/matrixTree">
                                     My Matrix Tree
                                   </Link>
                                 </li>
@@ -213,37 +236,37 @@ const toggleSubMenu = (menu: string) => {
                                 </li>
 
                                 <li>
-                                  <Link to="/sponsorBonus">
+                                  <Link onClick={handleMenuClick} to="/sponsorBonus">
                                     Team Sponsor Bonus
                                   </Link>
                                 </li>
 
                                 <li>
-                                  <Link to="/directBonus">
+                                  <Link onClick={handleMenuClick} to="/directBonus">
                                     Team Starter Bonus
                                   </Link>
                                 </li>
 
                                 <li>
-                                  <Link to="/levelBonus">
+                                  <Link onClick={handleMenuClick} to="/levelBonus">
                                     Team Level Bonus
                                   </Link>
                                 </li>
 
                                 <li>
-                                  <Link to="/poolBonus">
+                                  <Link onClick={handleMenuClick} to="/poolBonus">
                                     Team Pool Bonus
                                   </Link>
                                 </li>
 
                                 <li>
-                                  <Link to="/matchingBonus">
+                                  <Link onClick={handleMenuClick} to="/matchingBonus">
                                     Team Matching Bonus
                                   </Link>
                                 </li>
 
                                 <li>
-                                  <Link to="/globalPoolBonus">
+                                  <Link onClick={handleMenuClick} to="/globalPoolBonus">
                                     Global Silver Bonus
                                   </Link>
                                 </li>
@@ -261,31 +284,31 @@ const toggleSubMenu = (menu: string) => {
                                 </li>
 
                                 <li>
-                                  <Link to="/calculator">
+                                  <Link onClick={handleMenuClick} to="/calculator">
                                     Calculator
                                   </Link>
                                 </li>
 
                                 <li>
-                                  <Link to="/persentationPdf">
+                                  <Link onClick={handleMenuClick} to="/persentationPdf">
                                     Presentation PDF
                                   </Link>
                                 </li>
 
                                 <li>
-                                  <Link to="/webBanner">
+                                  <Link onClick={handleMenuClick} to="/webBanner">
                                     Web Banners
                                   </Link>
                                 </li>
 
                                 <li>
-                                  <Link to="/promotionBanner">
+                                  <Link onClick={handleMenuClick} to="/promotionBanner">
                                     Promotion Banners
                                   </Link>
                                 </li>
 
                                 <li>
-                                  <Link to="/printMaterials">
+                                  <Link onClick={handleMenuClick} to="/printMaterials">
                                     Print Materials
                                   </Link>
                                 </li>
@@ -323,43 +346,43 @@ const toggleSubMenu = (menu: string) => {
                       >
 
                         <li>
-                          <Link to="#">Earn Reward Dashboard</Link>
+                          <Link onClick={handleMenuClick} to="#">Earn Reward Dashboard</Link>
                         </li>
 
                         <li>
-                          <Link to="#">Platform Login</Link>
+                          <Link onClick={handleMenuClick} to="#">Platform Login</Link>
                         </li>
 
                         <li>
-                          <Link to="#">Profile Activity</Link>
+                          <Link onClick={handleMenuClick} to="#">Profile Activity</Link>
                         </li>
 
                         <li>
-                          <Link to="#">X (Twitter)</Link>
+                          <Link onClick={handleMenuClick} to="#">X (Twitter)</Link>
                         </li>
 
                         <li>
-                          <Link to="#">Facebook</Link>
+                          <Link onClick={handleMenuClick} to="#">Facebook</Link>
                         </li>
 
                         <li>
-                          <Link to="#">Youtube</Link>
+                          <Link onClick={handleMenuClick} to="#">Youtube</Link>
                         </li>
 
                         <li>
-                          <Link to="#">Write Review</Link>
+                          <Link onClick={handleMenuClick} to="#">Write Review</Link>
                         </li>
 
                         <li>
-                          <Link to="#">Telegram</Link>
+                          <Link onClick={handleMenuClick} to="#">Telegram</Link>
                         </li>
 
                         <li>
-                          <Link to="#">Email Marketing</Link>
+                          <Link onClick={handleMenuClick} to="#">Email Marketing</Link>
                         </li>
 
                         <li>
-                          <Link to="#">Redeem XP Points</Link>
+                          <Link onClick={handleMenuClick} to="#">Redeem XP Points</Link>
                         </li>
 
                       </ul>
@@ -367,19 +390,19 @@ const toggleSubMenu = (menu: string) => {
                     </li>
 
                     <li>
-                      <Link to="/memecoin">MemeRadar</Link>
+                      <Link onClick={handleMenuClick} to="/memecoin">MemeRadar</Link>
                     </li>
 
                     <li>
-                      <Link to="/fiveDollar">$Five</Link>
+                      <Link onClick={handleMenuClick} to="/fiveDollar">$Five</Link>
                     </li>
 
                     <li>
-                      <Link to="/memeKols">MemeKOLs</Link>
+                      <Link onClick={handleMenuClick} to="/memeKols">MemeKOLs</Link>
                     </li>
 
                     <li>
-                      <Link to="/support">Support</Link>
+                      <Link onClick={handleMenuClick} to="/support">Support</Link>
                     </li>
 
                   </ul>

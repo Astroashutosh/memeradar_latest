@@ -27,6 +27,10 @@
       });
     };
 
+    
+
+
+
     const appcheer = document.getElementById("appcheer");
     if (appcheer) {
       appcheer.volume = volume;

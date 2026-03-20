@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useWallet } from "../../../solana/context/WalletContext";
-import { packages, getUserData, shorten } from "../../../solana/program";
+import { packages, getUserData, shorten, getSponsorDetails } from "../../../solana/program";
 import type { UserData } from "../../../solana/types";
 import { shareContent, copyToClipboard } from "../../../utils/helpers"
+import { Link } from 'react-router-dom';
 // // import UpgradeModal  from "../../modal/UpgradeModal"
 // import { upgradePackage, checkUserRegistered } from "../../../solana/program";
 // import { notifySuccess, notifyError } from "../../../solana/context/Notifications";
@@ -14,7 +15,11 @@ interface SidebarProps {
 function Sidebar({ onUpgradeClick }: SidebarProps) {
   const { wallet } = useWallet();
   const [userData, setUserData] = useState<UserData | null>(null);
-
+// const [sponsorData, setSponsorData] = useState<any>(null);
+const [sponsorData, setSponsorData] = useState<{
+  sponsor?: string;
+  sponsor_id?: string;
+} | null>(null);
   useEffect(() => {
     const loadUser = async () => {
       if (!wallet) return;
@@ -27,6 +32,21 @@ function Sidebar({ onUpgradeClick }: SidebarProps) {
     loadUser();
 
   }, [wallet]);
+
+
+  useEffect(() => {
+  const loadSponsor = async () => {
+    if (!wallet) return;
+
+    const res = await getSponsorDetails(wallet);
+console.log("Sponsor detail :",res);
+    if (res?.status) {
+      setSponsorData(res);
+    }
+  };
+
+  loadSponsor();
+}, [wallet]);
 
   // const handleUpgrade = async () => {
   //   if (!wallet || !nextPackage) return;
@@ -88,16 +108,17 @@ function Sidebar({ onUpgradeClick }: SidebarProps) {
               <div className="col-sm-7 col-7 text-start">
                 <small> Current Rank</small>
                 {/* <h4> {userPackage?.name ?? "No Rank"}</h4> */}
-                <h4>
+                {/* <h4>
                   {userData?.rank && userData.rank !== "None"
                     ? userData.rank
                     : "No Rank"}
-                </h4>
+                </h4> */}
+                <h4>{packages.find(p => p.id === userData?.currentPackage)?.name || "DBO"} </h4>
               </div>
               <div className="col-sm-5 col-5 text-end">
-                <a href="certificate.html" className="btn btn-primary btn-sm bg-gradient-golden">
+                <Link to="/certificate" className="btn btn-primary btn-sm bg-gradient-golden">
                   <i className="fa-regular fa-download me-1"></i>Certificate
-                </a>
+                </Link>
               </div>
             </div>
 
@@ -169,6 +190,18 @@ function Sidebar({ onUpgradeClick }: SidebarProps) {
             <span className="text-success"> <span className="text-decoration-line-through text-white"><i
               className="fa-regular fa-usd me-1"></i>5.00</span> Free </span>
           </div>
+
+ <div className="section-head mb-1">
+            <div className="section-title">Sponsor</div>
+          </div>
+          <div className="item-style-box d-flex justify-content-between align-items-center mb-0">
+            <span><i className="fa-regular fa-tag me-1"></i>   {sponsorData?.sponsor
+      ? shorten(sponsorData.sponsor)
+      : "Not Assigned"}</span>
+            <span className="text-success"> {sponsorData?.sponsor_id ?? "-"}</span>  
+          </div>
+
+
         </div >
       </div >
     </>

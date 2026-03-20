@@ -1,13 +1,16 @@
 import { useState, useEffect } from 'react'
 import Sidebar from '../../components/layout/smartContract/Sidebar'
 import { useWallet } from "../../solana/context/WalletContext";
-import { checkUserRegistered, upgradePackage, getUserData,getLevelPartners,getLevelIncome } from "../../solana/program";
-import { notifySuccess, notifyError } from "../../solana/context/Notifications";
+import {  getUserData,getLevelPartners,getLevelIncome } from "../../solana/program";
+// import { notifySuccess, notifyError } from "../../solana/context/Notifications";
 import UpgradeModal from "../../components/modal/UpgradeModal";
+import { useUpgrade } from '../../solana/context/UpgradeContext';
+import { Link } from 'react-router-dom';
 
 
 function LevelBonus() {
   const { wallet } = useWallet();
+    const { handleUpgrade, upgrading } = useUpgrade();
   const [selectedPackage, setSelectedPackage] = useState<any>(null);
   const [userData, setUserData] = useState<any>(null);
   const [levelCounts, setLevelCounts] = useState<number[]>([]);
@@ -56,28 +59,28 @@ useEffect(() => {
 
 
 
-  const handleUpgrade = async () => {
+  // const handleUpgrade = async () => {
 
-    if (!wallet) return;
-    if (!selectedPackage) {
-      notifyError("Select package first");
-      return;
-    }
+  //   if (!wallet) return;
+  //   if (!selectedPackage) {
+  //     notifyError("Select package first");
+  //     return;
+  //   }
 
-    try {
-      const registered = await checkUserRegistered(wallet);
-      console.log("registered", registered);
-      if (registered) {
-        await upgradePackage(wallet, selectedPackage.id);
-        notifySuccess("Package upgraded successfully");
-      }
+  //   try {
+  //     const registered = await checkUserRegistered(wallet);
+  //     console.log("registered", registered);
+  //     if (registered) {
+  //       await upgradePackage(wallet, selectedPackage.id);
+  //       notifySuccess("Package upgraded successfully");
+  //     }
 
-    } catch (err: any) {
-      console.error(err);
-      notifyError(err.message || "Upgrade failed");
-    }
+  //   } catch (err: any) {
+  //     console.error(err);
+  //     notifyError(err.message || "Upgrade failed");
+  //   }
 
-  };
+  // };
   return (
     <>
       <main>
@@ -202,9 +205,12 @@ useEffect(() => {
         <td>{count}</td>
         <td>{income.toFixed(2)} SOL</td>
         <td>
-          <a href="level-bonus-details.html" className="btn btn-primary btn-sm">
-            <i className="fa-regular fa-eye small me-1"></i>View
-          </a>
+       <Link 
+  to={`/levelbonusDetails/${level}`} 
+  className="btn btn-primary btn-sm"
+>
+  <i className="fa-regular fa-eye small me-1"></i>View
+</Link>
         </td>
       </tr>
     );
@@ -239,11 +245,20 @@ useEffect(() => {
           </div>
         </div>
       </main>
-      <UpgradeModal
+      {/* <UpgradeModal
         selectedPackage={selectedPackage}
         onUpgrade={handleUpgrade}
-      />
-
+      /> */}
+<UpgradeModal
+  selectedPackage={selectedPackage}
+  onUpgrade={() =>
+    handleUpgrade(wallet, selectedPackage, () => {
+      // 🔥 optional refresh
+      window.location.reload();
+    })
+  }
+  upgrading={upgrading}
+/>
 
     </>
   )

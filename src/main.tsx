@@ -14,7 +14,6 @@ import "./assets/vendor/dataTables.bootstrap5.min.css";
 import App from "./App.tsx";
 
 
-
 // const BASE = import.meta.env.BASE_URL;
 
 // const fixAssets = () => {

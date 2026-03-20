@@ -1,9 +1,12 @@
 import { useState, useEffect } from 'react'
 import Sidebar from '../../components/layout/smartContract/Sidebar';
 import { useWallet } from "../../solana/context/WalletContext";
-import { checkUserRegistered, upgradePackage, getUserData, shorten,getReports  } from "../../solana/program";
-import { notifySuccess, notifyError } from "../../solana/context/Notifications";
+// import { checkUserRegistered, upgradePackage, getUserData, shorten,getReports  } from "../../solana/program";
+import { getUserData, shorten,getReports  } from "../../solana/program";
+
+// import { notifySuccess, notifyError } from "../../solana/context/Notifications";
 import UpgradeModal from "../../components/modal/UpgradeModal";
+import { useUpgrade } from '../../solana/context/UpgradeContext';
 
 function DirectBonus() {
   const { wallet } = useWallet();
@@ -11,6 +14,7 @@ function DirectBonus() {
   const [selectedPackage, setSelectedPackage] = useState<any>(null);
   const [userData, setUserData] = useState<any>(null);
   const [rows, setRows] = useState<any[]>([]);
+  const { handleUpgrade, upgrading } = useUpgrade();
   const handleOpenUpgrade = (pkg: any) => {
     setSelectedPackage(pkg);
   };
@@ -88,28 +92,30 @@ useEffect(() => {
   load();
 }, [wallet]);
 
-  const handleUpgrade = async () => {
+  // const handleUpgrade = async () => {
 
-    if (!wallet) return;
-    if (!selectedPackage) {
-      notifyError("Select package first");
-      return;
-    }
+  //   if (!wallet) return;
+  //   if (!selectedPackage) {
+  //     notifyError("Select package first");
+  //     return;
+  //   }
 
-    try {
-      const registered = await checkUserRegistered(wallet);
-      console.log("registered", registered);
-      if (registered) {
-        await upgradePackage(wallet, selectedPackage.id);
-        notifySuccess("Package upgraded successfully");
-      }
+  //   try {
+  //     const registered = await checkUserRegistered(wallet);
+  //     console.log("registered", registered);
+  //     if (registered) {
+  //       await upgradePackage(wallet, selectedPackage.id);
+  //       notifySuccess("Package upgraded successfully");
+  //     }
 
-    } catch (err: any) {
-      console.error(err);
-      notifyError(err.message || "Upgrade failed");
-    }
+  //   } catch (err: any) {
+  //     console.error(err);
+  //     notifyError(err.message || "Upgrade failed");
+  //   }
 
-  };
+  // };
+ 
+ 
   return (
     <>
 
@@ -192,11 +198,21 @@ useEffect(() => {
           </div>
         </div>
       </main>
-      <UpgradeModal
+      {/* <UpgradeModal
         selectedPackage={selectedPackage}
         onUpgrade={handleUpgrade}
-      />
+      /> */}
 
+<UpgradeModal
+  selectedPackage={selectedPackage}
+  onUpgrade={() =>
+    handleUpgrade(wallet, selectedPackage, () => {
+      // 🔥 optional refresh
+      window.location.reload();
+    })
+  }
+  upgrading={upgrading}
+/>
 
     </>
   )
